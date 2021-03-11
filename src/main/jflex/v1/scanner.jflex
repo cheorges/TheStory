@@ -45,11 +45,9 @@ LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
 WhiteSpace = {LineTerminator} | [ \t\f]
 
-/* identifiers */
-Identifier = [:jletter:][:jletterdigit:]*
-
-/* floating point literals */
+Identifier = (a|an|the|my|your)\s[a-zA-Z]+|[a-zA-Z]+|([A-Z][a-z]+|[A-Z]+)\s([A-Z][a-z]+|[A-Z]+)
 Number = \d*\.?\d+
+StringIdentifier = [^\n\r\"\\]+
 
 %state STRING
 
@@ -62,21 +60,23 @@ Number = \d*\.?\d+
     "into"                              { return symbol(ParserSym.INTO); }
     "be"                                { return symbol(ParserSym.BE); }
     \"                                  { string.setLength(0); yybegin(STRING); }
+
     {LineTerminator}                    { return symbol(ParserSym.LINE_TERMINATOR); }
     {Number}                            { return symbol(ParserSym.NUMBER, yytext()); }
     {WhiteSpace}                        { /* ignore */ }
     {LineTerminator}                    { /* ignore */ }
+
     {Identifier}                        { return symbol(ParserSym.IDENTIFIER, yytext()); }
 }
 
 <STRING> {
-      \"                                { yybegin(YYINITIAL); return symbol(ParserSym.STRING_LITERAL, string.toString()); }
-      [^\n\r\"\\]+                      { string.append( yytext() ); }
-      \\t                               { string.append('\t'); }
-      \\n                               { string.append('\n'); }
-      \\r                               { string.append('\r'); }
-      \\\"                              { string.append('\"'); }
-      \\                                { string.append('\\'); }
+    \"                                  { yybegin(YYINITIAL); return symbol(ParserSym.STRING_LITERAL, string.toString()); }
+    {StringIdentifier}                  { string.append( yytext() ); }
+    \\t                                 { string.append('\t'); }
+    \\n                                 { string.append('\n'); }
+    \\r                                 { string.append('\r'); }
+    \\\"                                { string.append('\"'); }
+    \\                                  { string.append('\\'); }
     {LineTerminator}                    { throw new RuntimeException("Unterminated string at end of line"); }
 }
 
