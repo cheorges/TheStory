@@ -1,4 +1,7 @@
-package humanly.instruction;
+package ch.cheorges.instruction.flow;
+
+import ch.cheorges.instruction.Instruction;
+import ch.cheorges.instruction.InstructionVisitor;
 
 import java.util.ArrayList;
 import java.util.List;

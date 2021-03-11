@@ -1,12 +1,11 @@
-package humanly;
+package ch.cheorges;
 
-import humanly.instruction.GetVariableInstruction;
-import humanly.instruction.InstructionScript;
-import humanly.instruction.InstructionSetVariable;
-import humanly.instruction.InstructionVisitor;
-import humanly.instruction.MathOperationInstruction;
-import humanly.instruction.NumberInstruction;
-import humanly.instruction.StringLiteralInstruction;
+import ch.cheorges.instruction.InstructionVisitor;
+import ch.cheorges.instruction.flow.InstructionScript;
+import ch.cheorges.instruction.type.NumberInstruction;
+import ch.cheorges.instruction.type.StringLiteralInstruction;
+import ch.cheorges.instruction.variable.GetVariableInstruction;
+import ch.cheorges.instruction.variable.InstructionSetVariable;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
@@ -27,14 +26,13 @@ public class Evaluator implements InstructionVisitor<Object> {
    public Object visitSetVariable(InstructionSetVariable instruction) {
       Object evaluatedValue = instruction.getValue().acceptVisitor(this);
       context.put(instruction.getIdentifier(), evaluatedValue);
-      // TODO: What would be better here?
+      // TODO: Is it better to return Type-Instruction?
       return evaluatedValue;
    }
 
    @Override
    public Object handleResolveVariable(GetVariableInstruction instruction) {
       return context.get(instruction.getIdentifier());
-
    }
 
    @Override
@@ -54,13 +52,6 @@ public class Evaluator implements InstructionVisitor<Object> {
          instruction.getInstructions().get(index).acceptVisitor(this);
       }
       return instruction.getInstructions().get(indexOfLastInstruction).acceptVisitor(this);
-   }
-
-   @Override
-   public Object handleMathOperation(MathOperationInstruction instruction) {
-      BigDecimal leftValue = new BigDecimal(String.valueOf(instruction.getLeftValue().acceptVisitor(this)));
-      BigDecimal rightValue = new BigDecimal(String.valueOf(instruction.getRightValue().acceptVisitor(this)));
-      return instruction.getOperator().handle(leftValue, rightValue);
    }
 
 }

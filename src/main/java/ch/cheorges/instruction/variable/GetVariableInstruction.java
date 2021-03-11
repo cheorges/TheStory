@@ -1,4 +1,7 @@
-package humanly.instruction;
+package ch.cheorges.instruction.variable;
+
+import ch.cheorges.instruction.Instruction;
+import ch.cheorges.instruction.InstructionVisitor;
 
 public class GetVariableInstruction extends Instruction {
    private final String identifier;

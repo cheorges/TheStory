@@ -1,7 +1,10 @@
-package humanly.instruction;
+package ch.cheorges.instruction.type;
+
+import ch.cheorges.instruction.Instruction;
+import ch.cheorges.instruction.InstructionVisitor;
 
 public class StringLiteralInstruction extends Instruction {
-   private String value;
+   private final String value;
 
    public StringLiteralInstruction(String value) {
       this.value = value;
@@ -14,9 +17,5 @@ public class StringLiteralInstruction extends Instruction {
 
    public String getValue() {
       return value;
-   }
-
-   public void setValue(String value) {
-      this.value = value;
    }
 }

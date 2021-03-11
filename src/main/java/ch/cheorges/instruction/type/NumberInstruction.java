@@ -1,4 +1,7 @@
-package humanly.instruction;
+package ch.cheorges.instruction.type;
+
+import ch.cheorges.instruction.Instruction;
+import ch.cheorges.instruction.InstructionVisitor;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -17,9 +20,5 @@ public class NumberInstruction extends Instruction {
 
    public BigDecimal getValue() {
       return value;
-   }
-
-   public void setValue(BigDecimal value) {
-      this.value = value;
    }
 }

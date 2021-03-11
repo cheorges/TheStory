@@ -1,0 +1,33 @@
+package v1;
+
+import java_cup.runtime.*;
+import ch.cheorges.instruction.*;
+import ch.cheorges.instruction.flow.*;
+import ch.cheorges.instruction.type.*;
+import ch.cheorges.instruction.variable.*;
+
+class Parser;
+
+terminal    String STRING_LITERAL;
+terminal    String IDENTIFIER;
+terminal    String NUMBER;
+
+terminal    LET, PUT, INTO, BE;
+terminal    LINE_TERMINATOR;
+
+non terminal    Instruction instruction;
+non terminal    Instruction assigment;
+non terminal    Instruction value;
+
+start with instruction;
+
+instruction     ::= assigment:a {: RESULT = new InstructionScript(a, null); :};
+
+assigment       ::= PUT value:v INTO IDENTIFIER:i {: RESULT = new InstructionSetVariable(i, v); :}
+                  | LET IDENTIFIER:i BE value:v {: RESULT = new InstructionSetVariable(i, v); :}
+                  ;
+
+value           ::= NUMBER:n {: RESULT = new NumberInstruction(n); :}
+                  | IDENTIFIER:i {: RESULT = new GetVariableInstruction(i); :}
+                  | STRING_LITERAL:s {: RESULT = new StringLiteralInstruction(s); :}
+                  ;
