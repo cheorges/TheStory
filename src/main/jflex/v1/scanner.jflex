@@ -61,6 +61,11 @@ StringIdentifier = [^\n\r\"\\]+
     "be"                                { return symbol(ParserSym.BE); }
     \"                                  { string.setLength(0); yybegin(STRING); }
 
+    (with|plus)                         { return symbol(ParserSym.ADD); }
+    (without|minus)                     { return symbol(ParserSym.MIN); }
+    (times|of)                          { return symbol(ParserSym.MUL); }
+    over                                { return symbol(ParserSym.DIV); }
+
     {LineTerminator}                    { return symbol(ParserSym.LINE_TERMINATOR); }
     {Number}                            { return symbol(ParserSym.NUMBER, yytext()); }
     {WhiteSpace}                        { /* ignore */ }

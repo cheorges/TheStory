@@ -5,6 +5,7 @@ import ch.cheorges.instruction.*;
 import ch.cheorges.instruction.flow.*;
 import ch.cheorges.instruction.type.*;
 import ch.cheorges.instruction.variable.*;
+import ch.cheorges.instruction.math.*;
 
 class Parser;
 
@@ -13,21 +14,37 @@ terminal    String IDENTIFIER;
 terminal    String NUMBER;
 
 terminal    LET, PUT, INTO, BE;
+terminal    ADD, MIN, MUL, DIV, MOD;
 terminal    LINE_TERMINATOR;
 
 non terminal    Instruction instruction;
 non terminal    Instruction assigment;
 non terminal    Instruction value;
+non terminal    Instruction operation;
+non terminal    MathOperator operator;
+
+precedence left DIV, MIN, ADD, MUL;
 
 start with instruction;
 
-instruction     ::= assigment:a {: RESULT = new InstructionScript(a, null); :};
+instruction     ::= assigment:a {: RESULT = new InstructionScript(a, null); :}
+                  | operation:o {: RESULT = new InstructionScript(o, null); :}
+                  ;
 
 assigment       ::= PUT value:v INTO IDENTIFIER:i {: RESULT = new InstructionSetVariable(i, v); :}
                   | LET IDENTIFIER:i BE value:v {: RESULT = new InstructionSetVariable(i, v); :}
                   ;
 
 value           ::= NUMBER:n {: RESULT = new NumberInstruction(n); :}
-                  | IDENTIFIER:i {: RESULT = new GetVariableInstruction(i); :}
                   | STRING_LITERAL:s {: RESULT = new StringLiteralInstruction(s); :}
+                  | IDENTIFIER:i {: RESULT = new GetVariableInstruction(i); :}
+                  | operation:o {: RESULT = o; :}
+                  ;
+
+operation       ::= value:vl operator:o value:vr {: RESULT = new MathOperationInstruction(vl, vr, o); :};
+
+operator        ::= ADD {: RESULT = MathOperator.ADD; :}
+                  | MIN {: RESULT = MathOperator.MIN; :}
+                  | MUL {: RESULT = MathOperator.MUL; :}
+                  | DIV {: RESULT = MathOperator.DIV; :}
                   ;

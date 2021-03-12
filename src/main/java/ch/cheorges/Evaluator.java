@@ -2,6 +2,7 @@ package ch.cheorges;
 
 import ch.cheorges.instruction.InstructionVisitor;
 import ch.cheorges.instruction.flow.InstructionScript;
+import ch.cheorges.instruction.math.MathOperationInstruction;
 import ch.cheorges.instruction.type.NumberInstruction;
 import ch.cheorges.instruction.type.StringLiteralInstruction;
 import ch.cheorges.instruction.variable.GetVariableInstruction;
@@ -43,6 +44,13 @@ public class Evaluator implements InstructionVisitor<Object> {
    @Override
    public Object handleStringLiteral(StringLiteralInstruction instruction) {
       return instruction.getValue();
+   }
+
+   @Override
+   public Object handleMathOperation(MathOperationInstruction instruction) {
+      BigDecimal leftValue = new BigDecimal(String.valueOf(instruction.getLeftValue().acceptVisitor(this)));
+      BigDecimal rightValue = new BigDecimal(String.valueOf(instruction.getRightValue().acceptVisitor(this)));
+      return instruction.getOperator().handle(leftValue, rightValue);
    }
 
    @Override
