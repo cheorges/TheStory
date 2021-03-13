@@ -11,11 +11,11 @@ Run this command `./gradlew build`
 ### Datatype
 
 * String Literal
-* Number (*round half up*)
+* Number
 
 ### Variable
 
-A varable can be set of two ways:
+A variable can be set of two ways:
 
 ```
 Let x be 1
@@ -27,3 +27,12 @@ A variable ...
 * ... has no fix datatype.
 * ... can have the following prefix: `a`, `an`, `the`, `my` and `your`
 * ... can also be a name like `Black Pearl`.
+
+### Mathematics
+
+|operator|keywords|
+|:---:|:---:|
+|`+`|`plus`/`with`|
+|`-`|`minus`/`without`|
+|`*`|`times`/`of`|
+|`/`|`over`|
