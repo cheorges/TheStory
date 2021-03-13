@@ -6,6 +6,8 @@ import org.junit.Test;
 
 import java.math.BigDecimal;
 
+import ch.cheorges.exception.IllegalTypeException;
+
 public class EvaluatorMathTest extends BaseEvaluatorTest {
 
    @Test
@@ -130,5 +132,15 @@ public class EvaluatorMathTest extends BaseEvaluatorTest {
       assertThat((String) parseExpression("\"x\" times 3")).isEqualTo("xxx");
       assertThat((String) parseExpression("3 of \"x\"")).isEqualTo("xxx");
       assertThat((String) parseExpression("3 times \"x\"")).isEqualTo("xxx");
+   }
+
+   @Test(expected = IllegalTypeException.class)
+   public void wrong_type_boolean() throws Exception {
+      assertThat(parseExpression("yes with 3"));
+   }
+
+   @Test(expected = IllegalTypeException.class)
+   public void wrong_type_string() throws Exception {
+      assertThat(parseExpression("\"x\" over 3"));
    }
 }

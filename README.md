@@ -12,6 +12,7 @@ Run this command `./gradlew build`
 
 * String Literal
 * Number
+* Boolean
 
 ### Variable
 
@@ -20,6 +21,7 @@ A variable can be set of two ways:
 ```
 Let x be 1
 Put 1 into x
+Now x will be 1
 ```
 
 A variable ...
@@ -36,3 +38,12 @@ A variable ...
 |`-`|`minus`/`without`|
 |`*`|`times`/`of`|
 |`/`|`over`|
+
+### Condition
+
+|operator|keywords|
+|:---:|:---:|
+|`>`|`is higher/greater/bigger/stronger than`|
+|`<`|`is lower/less/smaller/weaker than`|
+|`>=`|`is as high/great/big/strong as`|
+|`<=`|`is as low/little/small/weak as`|

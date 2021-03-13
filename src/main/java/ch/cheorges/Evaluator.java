@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ch.cheorges.instruction.InstructionVisitor;
+import ch.cheorges.instruction.condition.BooleanConditionInstruction;
 import ch.cheorges.instruction.flow.InstructionScript;
 import ch.cheorges.instruction.math.MathOperationInstruction;
+import ch.cheorges.instruction.type.BooleanInstruction;
 import ch.cheorges.instruction.type.NumberInstruction;
 import ch.cheorges.instruction.type.StringLiteralInstruction;
 import ch.cheorges.instruction.variable.GetVariableInstruction;
@@ -46,6 +48,11 @@ public class Evaluator implements InstructionVisitor<Object> {
    }
 
    @Override
+   public Object handleBooleanInstruction(BooleanInstruction instruction) {
+      return instruction.getValue();
+   }
+
+   @Override
    public Object handleMathOperation(MathOperationInstruction instruction) {
       return instruction.getOperator().handle(
             instruction.getLeftValue().acceptVisitor(this),
@@ -59,6 +66,13 @@ public class Evaluator implements InstructionVisitor<Object> {
          instruction.getInstructions().get(index).acceptVisitor(this);
       }
       return instruction.getInstructions().get(indexOfLastInstruction).acceptVisitor(this);
+   }
+
+   @Override
+   public Object handleBooleanCondition(BooleanConditionInstruction instruction) {
+      return instruction.getCondition().handle(
+            instruction.getLeftValue().acceptVisitor(this),
+            instruction.getRightValue().acceptVisitor(this));
    }
 
 }

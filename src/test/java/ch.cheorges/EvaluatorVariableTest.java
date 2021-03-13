@@ -2,10 +2,9 @@ package ch.cheorges;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 import java.math.BigDecimal;
+
+import org.junit.Test;
 
 public class EvaluatorVariableTest extends BaseEvaluatorTest {
 
@@ -190,4 +189,35 @@ public class EvaluatorVariableTest extends BaseEvaluatorTest {
       assertThat(parseExpression("Put 3.14 into Black Pearl")).isEqualTo(PI);
       assertThat(parseExpression("Put \"Hello, World!\" into Black Pearl")).isEqualTo("Hello, World!");
    }
+
+   @Test
+   public void let_variable_be_boolean() throws Exception {
+      assertThat((Boolean) parseExpression("let foo be yes")).isTrue();
+      assertThat((Boolean) parseExpression("let foo be true")).isTrue();
+      assertThat((Boolean) parseExpression("let foo be ok")).isTrue();
+      assertThat((Boolean) parseExpression("let foo be right")).isTrue();
+   }
+
+   @Test
+   public void put_boolean_to_variable() throws Exception {
+      assertThat((Boolean) parseExpression("put no into foo")).isFalse();
+      assertThat((Boolean) parseExpression("put false into foo")).isFalse();
+      assertThat((Boolean) parseExpression("put lies into foo")).isFalse();
+      assertThat((Boolean) parseExpression("put wrong into foo")).isFalse();
+   }
+
+   @Test
+   public void now_variable_will_be_value() throws Exception {
+      assertThat(parseExpression("now x will be 1")).isEqualTo(BigDecimal.ONE);
+      assertThat(parseExpression("now x will be 3.14")).isEqualTo(PI);
+      assertThat(parseExpression("now x will be \"Hello, World!\"")).isEqualTo("Hello, World!");
+   }
+
+   @Test
+   public void Now_variable_will_be_value() throws Exception {
+      assertThat(parseExpression("Now x will be 1")).isEqualTo(BigDecimal.ONE);
+      assertThat(parseExpression("Now x will be 3.14")).isEqualTo(PI);
+      assertThat(parseExpression("Now x will be \"Hello, World!\"")).isEqualTo("Hello, World!");
+   }
+
 }

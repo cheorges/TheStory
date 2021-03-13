@@ -47,6 +47,9 @@ WhiteSpace = {LineTerminator} | [ \t\f]
 
 Prefix = a|an|the|my|your
 Identifier = [a-zA-Z]+
+
+BooleanTrue = yes|ok|right|true
+BooleanFalse = no|lies|wrong|false
 Number = \d*\.?\d+
 StringIdentifier = [^\n\r\"\\]+
 
@@ -58,8 +61,10 @@ StringIdentifier = [^\n\r\"\\]+
     /* keywords */
     (Let|let)                           { return symbol(ParserSym.LET); }
     (Put|put)                           { return symbol(ParserSym.PUT); }
+    (Now|now)                           { return symbol(ParserSym.NOW); }
     "into"                              { return symbol(ParserSym.INTO); }
     "be"                                { return symbol(ParserSym.BE); }
+    "will be"                           { return symbol(ParserSym.WILL_BE); }
     \"                                  { string.setLength(0); yybegin(STRING); }
 
     (with|plus)                         { return symbol(ParserSym.ADD); }
@@ -67,8 +72,29 @@ StringIdentifier = [^\n\r\"\\]+
     (times|of)                          { return symbol(ParserSym.MUL); }
     over                                { return symbol(ParserSym.DIV); }
 
+    "is higher than"                    { return symbol(ParserSym.GE); }
+    "is greater than"                   { return symbol(ParserSym.GE); }
+    "is bigger than"                    { return symbol(ParserSym.GE); }
+    "is stronger than"                  { return symbol(ParserSym.GE); }
+    "is lower than"                     { return symbol(ParserSym.LE); }
+    "is less than"                      { return symbol(ParserSym.LE); }
+    "is smaller than"                   { return symbol(ParserSym.LE); }
+    "is weaker than"                    { return symbol(ParserSym.LE); }
+    "is as high as"                     { return symbol(ParserSym.GEQ); }
+    "is as great as"                    { return symbol(ParserSym.GEQ); }
+    "is as big as"                      { return symbol(ParserSym.GEQ); }
+    "is as strong as"                   { return symbol(ParserSym.GEQ); }
+    "is as low as"                      { return symbol(ParserSym.LEQ); }
+    "is as little as"                   { return symbol(ParserSym.LEQ); }
+    "is as small as"                    { return symbol(ParserSym.LEQ); }
+    "is as weak as"                     { return symbol(ParserSym.LEQ); }
+    "is exactly the same as"            { return symbol(ParserSym.EQ); }
+    "is not the same as"                { return symbol(ParserSym.NOT_EQ); }
+
     {LineTerminator}                    { return symbol(ParserSym.LINE_TERMINATOR); }
     {Number}                            { return symbol(ParserSym.NUMBER, yytext()); }
+    {BooleanTrue}                       { return symbol(ParserSym.TRUE, true); }
+    {BooleanFalse}                      { return symbol(ParserSym.FALSE, false); }
     {WhiteSpace}                        { /* ignore */ }
 
     {Prefix}                            { return symbol(ParserSym.PREFIX, yytext()); }

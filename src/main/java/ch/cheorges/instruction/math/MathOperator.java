@@ -1,5 +1,8 @@
 package ch.cheorges.instruction.math;
 
+import static ch.cheorges.instruction.type.TypeUtil.isNumber;
+import static ch.cheorges.instruction.type.TypeUtil.isStringLiteral;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.stream.Stream;
@@ -27,11 +30,11 @@ public enum MathOperator {
    private Object addition(Object leftValue, Object rightValue) {
       if (isNumber(leftValue) && isNumber(rightValue)) {
          return new BigDecimal(leftValue.toString()).add(new BigDecimal(rightValue.toString()));
-      } else if (leftValue instanceof String || rightValue instanceof String) {
+      } else if (isStringLiteral(leftValue) || isStringLiteral(rightValue)) {
          return leftValue.toString() + rightValue.toString();
       }
 
-      throw new IllegalTypeException("Illegal type for " + this.value + ".");
+      throw new IllegalTypeException(this.value);
    }
 
 
@@ -40,21 +43,21 @@ public enum MathOperator {
          return new BigDecimal(leftValue.toString()).subtract(new BigDecimal(rightValue.toString()));
       }
 
-      throw new IllegalTypeException("Illegal type for " + this.value + ".");
+      throw new IllegalTypeException(this.value);
    }
 
    private Object multiplication(Object leftValue, Object rightValue) {
       if (isNumber(leftValue) && isNumber(rightValue)) {
          return new BigDecimal(leftValue.toString()).multiply(new BigDecimal(rightValue.toString()));
-      } else if (isNumber(leftValue) && rightValue instanceof String) {
+      } else if (isNumber(leftValue) && isStringLiteral(rightValue)) {
          int count = ((BigDecimal) leftValue).toBigInteger().intValue();
          return Stream.generate(rightValue::toString).limit(count).reduce((a, b) -> a + b).get();
-      } else if (leftValue instanceof String && isNumber(rightValue)) {
+      } else if (isStringLiteral(leftValue) && isNumber(rightValue)) {
          int count = ((BigDecimal) rightValue).toBigInteger().intValue();
          return Stream.generate(leftValue::toString).limit(count).reduce((a, b) -> a + b).get();
       }
 
-      throw new IllegalTypeException("Illegal type for " + this.value + ".");
+      throw new IllegalTypeException(this.value);
    }
 
    private Object division(Object leftValue, Object rightValue) {
@@ -62,17 +65,7 @@ public enum MathOperator {
          return new BigDecimal(leftValue.toString()).divide(new BigDecimal(rightValue.toString()), RoundingMode.HALF_UP);
       }
 
-      throw new IllegalTypeException("Illegal type for " + this.value + ".");
-   }
-
-   private boolean isNumber(Object value) {
-      return value instanceof BigDecimal ||
-            value instanceof Short ||
-            value instanceof Byte ||
-            value instanceof Long ||
-            value instanceof Integer ||
-            value instanceof Double ||
-            value instanceof Float;
+      throw new IllegalTypeException(this.value);
    }
 
 }

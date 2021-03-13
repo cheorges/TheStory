@@ -6,6 +6,7 @@ import ch.cheorges.instruction.flow.*;
 import ch.cheorges.instruction.type.*;
 import ch.cheorges.instruction.variable.*;
 import ch.cheorges.instruction.math.*;
+import ch.cheorges.instruction.condition.*;
 
 class Parser;
 
@@ -13,9 +14,11 @@ terminal    String STRING_LITERAL;
 terminal    String IDENTIFIER;
 terminal    String PREFIX;
 terminal    String NUMBER;
+terminal    Boolean TRUE, FALSE;
 
-terminal    LET, PUT, INTO, BE;
+terminal    LET, PUT, INTO, BE, NOW, WILL_BE;
 terminal    ADD, SUB, MUL, DIV, MOD;
+terminal    GE, LE, GEQ, LEQ, EQ, NOT_EQ;
 terminal    LINE_TERMINATOR;
 
 non terminal    Instruction instruction;
@@ -23,6 +26,8 @@ non terminal    String identifier;
 non terminal    Instruction assigment;
 non terminal    Instruction value;
 non terminal    Instruction operation;
+non terminal    Instruction condition;
+non terminal    Instruction bool;
 non terminal    MathOperator operator;
 
 precedence left DIV, SUB, ADD, MUL;
@@ -31,10 +36,12 @@ start with instruction;
 
 instruction     ::= assigment:a {: RESULT = new InstructionScript(a, null); :}
                   | operation:o {: RESULT = new InstructionScript(o, null); :}
+                  | condition:c {: RESULT = new InstructionScript(c, null); :}
                   ;
 
 assigment       ::= PUT value:v INTO identifier:i {: RESULT = new InstructionSetVariable(i, v); :}
                   | LET identifier:i BE value:v {: RESULT = new InstructionSetVariable(i, v); :}
+                  | NOW identifier:i WILL_BE value:v {: RESULT = new InstructionSetVariable(i, v); :}
                   ;
 
 identifier      ::= IDENTIFIER:i {: RESULT = i; :}
@@ -44,14 +51,26 @@ identifier      ::= IDENTIFIER:i {: RESULT = i; :}
 
 value           ::= NUMBER:n {: RESULT = new NumberInstruction(n); :}
                   | STRING_LITERAL:s {: RESULT = new StringLiteralInstruction(s); :}
-                  | IDENTIFIER:i {: RESULT = new GetVariableInstruction(i); :}
+                  | bool:b {: RESULT = b; :}
+                  | identifier:i {: RESULT = new GetVariableInstruction(i); :}
                   | operation:o {: RESULT = o; :}
                   ;
 
-operation       ::= value:vl operator:o value:vr {: RESULT = new MathOperationInstruction(vl, vr, o); :};
+bool            ::= TRUE:b {: RESULT = new BooleanInstruction(b); :}
+                  | FALSE:b {: RESULT = new BooleanInstruction(b); :}
+                  ;
+
+operation       ::= value:l operator:o value:r {: RESULT = new MathOperationInstruction(l, r, o); :};
 
 operator        ::= ADD {: RESULT = MathOperator.ADD; :}
                   | SUB {: RESULT = MathOperator.SUB; :}
                   | MUL {: RESULT = MathOperator.MUL; :}
                   | DIV {: RESULT = MathOperator.DIV; :}
                   ;
+
+condition       ::= value:l GE value:r {: RESULT = new BooleanConditionInstruction(l, r, ConditionOperator.GE); :}
+                  | value:l LE value:r {: RESULT = new BooleanConditionInstruction(l, r, ConditionOperator.LE); :}
+                  | value:l GEQ value:r {: RESULT = new BooleanConditionInstruction(l, r, ConditionOperator.GEQ); :}
+                  | value:l LEQ value:r {: RESULT = new BooleanConditionInstruction(l, r, ConditionOperator.LEQ); :}
+                  | value:l EQ value:r {: RESULT = new BooleanConditionInstruction(l, r, ConditionOperator.EQ); :}
+                  | value:l NOT_EQ value:r {: RESULT = new BooleanConditionInstruction(l, r, ConditionOperator.NOT_EQ); :};
