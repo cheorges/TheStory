@@ -29,6 +29,7 @@ A variable ...
 * ... has no fix datatype.
 * ... can have the following prefix: `a`, `an`, `the`, `my` and `your`
 * ... can also be a name like `Black Pearl`.
+* ... is case-**insensitiv**. (`my dog` = `My dog`)
 
 ### Mathematics
 
@@ -47,3 +48,9 @@ A variable ...
 |`<`|`is lower/less/smaller/weaker than`|
 |`>=`|`is as high/great/big/strong as`|
 |`<=`|`is as low/little/small/weak as`|
+
+### Conditionals
+Conditional expressions start with the `If` (`if`) keyword, followed by an expression.
+The codeblock ends by a blank line. An `Else` (`else`) block can be written after an If block.
+
+### Loops

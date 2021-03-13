@@ -1,6 +1,7 @@
 package ch.cheorges;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import ch.cheorges.instruction.InstructionVisitor;
@@ -27,14 +28,14 @@ public class Evaluator implements InstructionVisitor<Object> {
    @Override
    public Object visitSetVariable(InstructionSetVariable instruction) {
       Object evaluatedValue = instruction.getValue().acceptVisitor(this);
-      context.put(instruction.getIdentifier(), evaluatedValue);
+      context.put(instruction.getIdentifier().toLowerCase(Locale.ROOT), evaluatedValue);
       // TODO: Is it better to return Type-Instruction?
       return evaluatedValue;
    }
 
    @Override
    public Object handleResolveVariable(GetVariableInstruction instruction) {
-      return context.get(instruction.getIdentifier());
+      return context.get(instruction.getIdentifier().toLowerCase(Locale.ROOT));
    }
 
    @Override
@@ -53,19 +54,19 @@ public class Evaluator implements InstructionVisitor<Object> {
    }
 
    @Override
-   public Object handleMathOperation(MathOperationInstruction instruction) {
-      return instruction.getOperator().handle(
-            instruction.getLeftValue().acceptVisitor(this),
-            instruction.getRightValue().acceptVisitor(this));
-   }
-
-   @Override
    public Object handleScript(InstructionScript instruction) {
       final int indexOfLastInstruction = instruction.getInstructions().size() - 1;
       for (int index = 0; index < indexOfLastInstruction; index++) {
          instruction.getInstructions().get(index).acceptVisitor(this);
       }
       return instruction.getInstructions().get(indexOfLastInstruction).acceptVisitor(this);
+   }
+
+   @Override
+   public Object handleMathOperation(MathOperationInstruction instruction) {
+      return instruction.getOperator().handle(
+            instruction.getLeftValue().acceptVisitor(this),
+            instruction.getRightValue().acceptVisitor(this));
    }
 
    @Override

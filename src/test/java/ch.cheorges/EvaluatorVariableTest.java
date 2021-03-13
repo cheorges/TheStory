@@ -220,4 +220,10 @@ public class EvaluatorVariableTest extends BaseEvaluatorTest {
       assertThat(parseExpression("Now x will be \"Hello, World!\"")).isEqualTo("Hello, World!");
    }
 
+   @Test
+   public void case_insensitive() throws Exception {
+      addVariable("x", 0);
+      assertThat((BigDecimal) parseExpression("X with 1")).isEqualToIgnoringScale(BigDecimal.ONE);
+   }
+
 }
