@@ -3,7 +3,7 @@ package ch.cheorges.instruction.type;
 import ch.cheorges.instruction.Instruction;
 import ch.cheorges.instruction.InstructionVisitor;
 
-public class StringLiteralInstruction extends Instruction {
+public class StringLiteralInstruction extends Instruction implements TypeInstruction<String> {
    private final String value;
 
    public StringLiteralInstruction(String value) {
@@ -15,7 +15,13 @@ public class StringLiteralInstruction extends Instruction {
       return visitor.handleStringLiteral(this);
    }
 
+   @Override
    public String getValue() {
+      return value;
+   }
+
+   @Override
+   public String toString() {
       return value;
    }
 }

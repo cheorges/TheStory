@@ -18,7 +18,7 @@ public class EvaluatorVariableTest extends BaseEvaluatorTest {
 
    @Test
    public void Let_variable_be_integer() throws Exception {
-      assertThat(parseExpression("Let foo be 1")).isEqualTo(BigDecimal.ONE);
+      assertThat(parseExpression("Let Foo be 1")).isEqualTo(BigDecimal.ONE);
    }
 
    @Test
@@ -170,7 +170,6 @@ public class EvaluatorVariableTest extends BaseEvaluatorTest {
       assertThat(parseExpression("let Black Pearl be \"Hello, World!\"")).isEqualTo("Hello, World!");
    }
 
-   @Ignore("!!!Problem -> Scanner create wrong Tokes.")
    @Test
    public void Let_name_be_value() throws Exception {
       assertThat(parseExpression("Let Black Pearl be 10")).isEqualTo(BigDecimal.TEN);

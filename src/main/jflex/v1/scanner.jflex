@@ -45,7 +45,8 @@ LineTerminator = \r|\n|\r\n
 InputCharacter = [^\r\n]
 WhiteSpace = {LineTerminator} | [ \t\f]
 
-Identifier = (a|an|the|my|your)\s[a-zA-Z]+|[a-zA-Z]+|([A-Z][a-z]+|[A-Z]+)\s([A-Z][a-z]+|[A-Z]+)
+Prefix = a|an|the|my|your
+Identifier = [a-zA-Z]+
 Number = \d*\.?\d+
 StringIdentifier = [^\n\r\"\\]+
 
@@ -62,15 +63,15 @@ StringIdentifier = [^\n\r\"\\]+
     \"                                  { string.setLength(0); yybegin(STRING); }
 
     (with|plus)                         { return symbol(ParserSym.ADD); }
-    (without|minus)                     { return symbol(ParserSym.MIN); }
+    (without|minus)                     { return symbol(ParserSym.SUB); }
     (times|of)                          { return symbol(ParserSym.MUL); }
     over                                { return symbol(ParserSym.DIV); }
 
     {LineTerminator}                    { return symbol(ParserSym.LINE_TERMINATOR); }
     {Number}                            { return symbol(ParserSym.NUMBER, yytext()); }
     {WhiteSpace}                        { /* ignore */ }
-    {LineTerminator}                    { /* ignore */ }
 
+    {Prefix}                            { return symbol(ParserSym.PREFIX, yytext()); }
     {Identifier}                        { return symbol(ParserSym.IDENTIFIER, yytext()); }
 }
 

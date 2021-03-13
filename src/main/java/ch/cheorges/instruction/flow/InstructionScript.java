@@ -1,11 +1,11 @@
 package ch.cheorges.instruction.flow;
 
-import ch.cheorges.instruction.Instruction;
-import ch.cheorges.instruction.InstructionVisitor;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import ch.cheorges.instruction.Instruction;
+import ch.cheorges.instruction.InstructionVisitor;
 
 public class InstructionScript extends Instruction {
    private final List<Instruction> instructions = new ArrayList<>();

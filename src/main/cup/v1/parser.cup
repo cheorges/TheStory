@@ -11,19 +11,21 @@ class Parser;
 
 terminal    String STRING_LITERAL;
 terminal    String IDENTIFIER;
+terminal    String PREFIX;
 terminal    String NUMBER;
 
 terminal    LET, PUT, INTO, BE;
-terminal    ADD, MIN, MUL, DIV, MOD;
+terminal    ADD, SUB, MUL, DIV, MOD;
 terminal    LINE_TERMINATOR;
 
 non terminal    Instruction instruction;
+non terminal    String identifier;
 non terminal    Instruction assigment;
 non terminal    Instruction value;
 non terminal    Instruction operation;
 non terminal    MathOperator operator;
 
-precedence left DIV, MIN, ADD, MUL;
+precedence left DIV, SUB, ADD, MUL;
 
 start with instruction;
 
@@ -31,8 +33,13 @@ instruction     ::= assigment:a {: RESULT = new InstructionScript(a, null); :}
                   | operation:o {: RESULT = new InstructionScript(o, null); :}
                   ;
 
-assigment       ::= PUT value:v INTO IDENTIFIER:i {: RESULT = new InstructionSetVariable(i, v); :}
-                  | LET IDENTIFIER:i BE value:v {: RESULT = new InstructionSetVariable(i, v); :}
+assigment       ::= PUT value:v INTO identifier:i {: RESULT = new InstructionSetVariable(i, v); :}
+                  | LET identifier:i BE value:v {: RESULT = new InstructionSetVariable(i, v); :}
+                  ;
+
+identifier      ::= IDENTIFIER:i {: RESULT = i; :}
+                  | identifier:i1 IDENTIFIER:i2 {: RESULT = i1 + " " + i2; :}
+                  | PREFIX:p IDENTIFIER:i {: RESULT = p + " " + i; :}
                   ;
 
 value           ::= NUMBER:n {: RESULT = new NumberInstruction(n); :}
@@ -44,7 +51,7 @@ value           ::= NUMBER:n {: RESULT = new NumberInstruction(n); :}
 operation       ::= value:vl operator:o value:vr {: RESULT = new MathOperationInstruction(vl, vr, o); :};
 
 operator        ::= ADD {: RESULT = MathOperator.ADD; :}
-                  | MIN {: RESULT = MathOperator.MIN; :}
+                  | SUB {: RESULT = MathOperator.SUB; :}
                   | MUL {: RESULT = MathOperator.MUL; :}
                   | DIV {: RESULT = MathOperator.DIV; :}
                   ;
