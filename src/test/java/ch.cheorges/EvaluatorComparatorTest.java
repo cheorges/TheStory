@@ -4,11 +4,10 @@ import static com.google.common.truth.Truth.assertThat;
 
 import org.junit.Test;
 
-import ch.cheorges.exception.IllegalTypeException;
 import ch.cheorges.exception.TypeCompareException;
 
-public class EvaluatorConditionOperator extends BaseEvaluatorTest {
-   
+public class EvaluatorComparatorTest extends BaseEvaluatorTest {
+
    @Test
    public void is_exactly_the_same_as() throws Exception {
       addVariable("foo", 1);

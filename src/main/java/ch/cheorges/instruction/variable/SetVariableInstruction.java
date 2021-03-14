@@ -3,11 +3,11 @@ package ch.cheorges.instruction.variable;
 import ch.cheorges.instruction.Instruction;
 import ch.cheorges.instruction.InstructionVisitor;
 
-public class InstructionSetVariable extends Instruction {
+public class SetVariableInstruction extends Instruction {
    private final String identifier;
    private final Instruction value;
 
-   public InstructionSetVariable(String identifier, Instruction value) {
+   public SetVariableInstruction(String identifier, Instruction value) {
       this.identifier = identifier;
       this.value = value;
    }

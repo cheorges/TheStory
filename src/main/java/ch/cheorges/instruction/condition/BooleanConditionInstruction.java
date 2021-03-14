@@ -6,12 +6,12 @@ import ch.cheorges.instruction.InstructionVisitor;
 public class BooleanConditionInstruction extends Instruction {
    private final Instruction leftValue;
    private final Instruction rightValue;
-   private final ConditionOperator conditionOperator;
+   private final ComparatorOperator comparatorOperator;
 
-   public BooleanConditionInstruction(Instruction leftValue, Instruction rightValue, ConditionOperator conditionOperator) {
+   public BooleanConditionInstruction(Instruction leftValue, Instruction rightValue, ComparatorOperator comparatorOperator) {
       this.leftValue = leftValue;
       this.rightValue = rightValue;
-      this.conditionOperator = conditionOperator;
+      this.comparatorOperator = comparatorOperator;
    }
 
    @Override
@@ -27,7 +27,7 @@ public class BooleanConditionInstruction extends Instruction {
       return rightValue;
    }
 
-   public ConditionOperator getCondition() {
-      return conditionOperator;
+   public ComparatorOperator getCondition() {
+      return comparatorOperator;
    }
 }

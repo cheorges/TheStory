@@ -6,13 +6,14 @@ import java.util.Map;
 
 import ch.cheorges.instruction.InstructionVisitor;
 import ch.cheorges.instruction.condition.BooleanConditionInstruction;
-import ch.cheorges.instruction.flow.InstructionScript;
+import ch.cheorges.instruction.condition.ConditionalInstruction;
+import ch.cheorges.instruction.flow.ScriptInstruction;
 import ch.cheorges.instruction.math.MathOperationInstruction;
 import ch.cheorges.instruction.type.BooleanInstruction;
 import ch.cheorges.instruction.type.NumberInstruction;
 import ch.cheorges.instruction.type.StringLiteralInstruction;
 import ch.cheorges.instruction.variable.GetVariableInstruction;
-import ch.cheorges.instruction.variable.InstructionSetVariable;
+import ch.cheorges.instruction.variable.SetVariableInstruction;
 
 public class Evaluator implements InstructionVisitor<Object> {
    private final Map<String, Object> context;
@@ -26,7 +27,7 @@ public class Evaluator implements InstructionVisitor<Object> {
    }
 
    @Override
-   public Object visitSetVariable(InstructionSetVariable instruction) {
+   public Object visitSetVariable(SetVariableInstruction instruction) {
       Object evaluatedValue = instruction.getValue().acceptVisitor(this);
       context.put(instruction.getIdentifier().toLowerCase(Locale.ROOT), evaluatedValue);
       // TODO: Is it better to return Type-Instruction?
@@ -54,7 +55,7 @@ public class Evaluator implements InstructionVisitor<Object> {
    }
 
    @Override
-   public Object handleScript(InstructionScript instruction) {
+   public Object handleScript(ScriptInstruction instruction) {
       final int indexOfLastInstruction = instruction.getInstructions().size() - 1;
       for (int index = 0; index < indexOfLastInstruction; index++) {
          instruction.getInstructions().get(index).acceptVisitor(this);
@@ -74,6 +75,14 @@ public class Evaluator implements InstructionVisitor<Object> {
       return instruction.getCondition().handle(
             instruction.getLeftValue().acceptVisitor(this),
             instruction.getRightValue().acceptVisitor(this));
+   }
+
+   @Override
+   public Object handleConditional(ConditionalInstruction instruction) {
+      if (instruction.getCondition().acceptVisitor(this).equals(Boolean.TRUE)) {
+         return instruction.getTrueBlock().acceptVisitor(this);
+      }
+      return instruction.getFalseBlock().acceptVisitor(this);
    }
 
 }

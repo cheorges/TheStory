@@ -65,6 +65,8 @@ StringIdentifier = [^\n\r\"\\]+
     "into"                              { return symbol(ParserSym.INTO); }
     "be"                                { return symbol(ParserSym.BE); }
     "will be"                           { return symbol(ParserSym.WILL_BE); }
+    (If|if)                             { return symbol(ParserSym.IF); }
+    (Else|else)                         { return symbol(ParserSym.ELSE); }
     \"                                  { string.setLength(0); yybegin(STRING); }
 
     (with|plus)                         { return symbol(ParserSym.ADD); }

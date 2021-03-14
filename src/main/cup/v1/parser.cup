@@ -1,6 +1,7 @@
 package v1;
 
 import java_cup.runtime.*;
+import java.util.ArrayList;
 import ch.cheorges.instruction.*;
 import ch.cheorges.instruction.flow.*;
 import ch.cheorges.instruction.type.*;
@@ -16,17 +17,20 @@ terminal    String PREFIX;
 terminal    String NUMBER;
 terminal    Boolean TRUE, FALSE;
 
-terminal    LET, PUT, INTO, BE, NOW, WILL_BE;
-terminal    ADD, SUB, MUL, DIV, MOD;
+terminal    LET, PUT, INTO, BE, NOW, WILL_BE, IF, ELSE;
+terminal    ADD, SUB, MUL, DIV;
 terminal    GE, LE, GEQ, LEQ, EQ, NOT_EQ;
 terminal    LINE_TERMINATOR;
 
 non terminal    Instruction instruction;
+non terminal    Instruction block;
 non terminal    String identifier;
 non terminal    Instruction assigment;
 non terminal    Instruction value;
 non terminal    Instruction operation;
 non terminal    Instruction condition;
+non terminal    Instruction conditional;
+non terminal    ComparatorOperator comparator;
 non terminal    Instruction bool;
 non terminal    MathOperator operator;
 
@@ -34,19 +38,22 @@ precedence left DIV, SUB, ADD, MUL;
 
 start with instruction;
 
-instruction     ::= assigment:a {: RESULT = new InstructionScript(a, null); :}
-                  | operation:o {: RESULT = new InstructionScript(o, null); :}
-                  | condition:c {: RESULT = new InstructionScript(c, null); :}
+instruction     ::= assigment:a {: RESULT = new ScriptInstruction(a, null); :}
+                  | operation:o {: RESULT = new ScriptInstruction(o, null); :}
+                  | condition:c {: RESULT = new ScriptInstruction(c, null); :}
+                  | conditional:c {: RESULT = new ScriptInstruction(c, null); :}
                   ;
 
-assigment       ::= PUT value:v INTO identifier:i {: RESULT = new InstructionSetVariable(i, v); :}
-                  | LET identifier:i BE value:v {: RESULT = new InstructionSetVariable(i, v); :}
-                  | NOW identifier:i WILL_BE value:v {: RESULT = new InstructionSetVariable(i, v); :}
+block           ::= instruction:i LINE_TERMINATOR {: RESULT = new ScriptInstruction(i, null); :};
+
+assigment       ::= PUT value:v INTO identifier:i {: RESULT = new SetVariableInstruction(i, v); :}
+                  | LET identifier:i BE value:v {: RESULT = new SetVariableInstruction(i, v); :}
+                  | NOW identifier:i WILL_BE value:v {: RESULT = new SetVariableInstruction(i, v); :}
                   ;
 
 identifier      ::= IDENTIFIER:i {: RESULT = i; :}
-                  | identifier:i1 IDENTIFIER:i2 {: RESULT = i1 + " " + i2; :}
-                  | PREFIX:p IDENTIFIER:i {: RESULT = p + " " + i; :}
+                  | identifier:i1 IDENTIFIER:i2 {: RESULT = i1 + i2; :}
+                  | PREFIX:p IDENTIFIER:i {: RESULT = p + i; :}
                   ;
 
 value           ::= NUMBER:n {: RESULT = new NumberInstruction(n); :}
@@ -68,9 +75,19 @@ operator        ::= ADD {: RESULT = MathOperator.ADD; :}
                   | DIV {: RESULT = MathOperator.DIV; :}
                   ;
 
-condition       ::= value:l GE value:r {: RESULT = new BooleanConditionInstruction(l, r, ConditionOperator.GE); :}
-                  | value:l LE value:r {: RESULT = new BooleanConditionInstruction(l, r, ConditionOperator.LE); :}
-                  | value:l GEQ value:r {: RESULT = new BooleanConditionInstruction(l, r, ConditionOperator.GEQ); :}
-                  | value:l LEQ value:r {: RESULT = new BooleanConditionInstruction(l, r, ConditionOperator.LEQ); :}
-                  | value:l EQ value:r {: RESULT = new BooleanConditionInstruction(l, r, ConditionOperator.EQ); :}
-                  | value:l NOT_EQ value:r {: RESULT = new BooleanConditionInstruction(l, r, ConditionOperator.NOT_EQ); :};
+conditional     ::= IF condition:c LINE_TERMINATOR block:b LINE_TERMINATOR {: RESULT = new ConditionalInstruction(c, b); :}
+                  | IF condition:c LINE_TERMINATOR block:b1 ELSE LINE_TERMINATOR block:b2 LINE_TERMINATOR {: RESULT = new ConditionalInstruction(c, b1, b2); :}
+                  ;
+
+condition       ::= value:l comparator:c value:r {: RESULT = new BooleanConditionInstruction(l, r, c); :}
+                  | bool:b {: RESULT = b; :}
+                  | identifier:i {: RESULT = new GetVariableInstruction(i); :}
+                  ;
+
+comparator      ::= GE {: RESULT = ComparatorOperator.GE; :}
+                  | LE {: RESULT = ComparatorOperator.LE; :}
+                  | GEQ {: RESULT = ComparatorOperator.GEQ; :}
+                  | LEQ {: RESULT = ComparatorOperator.LEQ; :}
+                  | EQ {: RESULT = ComparatorOperator.EQ; :}
+                  | NOT_EQ {: RESULT = ComparatorOperator.NOT_EQ; :}
+                  ;

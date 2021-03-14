@@ -1,18 +1,20 @@
 package ch.cheorges.instruction;
 
 import ch.cheorges.instruction.condition.BooleanConditionInstruction;
-import ch.cheorges.instruction.flow.InstructionScript;
+import ch.cheorges.instruction.condition.ConditionalInstruction;
+import ch.cheorges.instruction.flow.ScriptInstruction;
 import ch.cheorges.instruction.math.MathOperationInstruction;
 import ch.cheorges.instruction.type.BooleanInstruction;
 import ch.cheorges.instruction.type.NumberInstruction;
 import ch.cheorges.instruction.type.StringLiteralInstruction;
 import ch.cheorges.instruction.variable.GetVariableInstruction;
-import ch.cheorges.instruction.variable.InstructionSetVariable;
+import ch.cheorges.instruction.variable.SetVariableInstruction;
 
 public interface InstructionVisitor<R> {
-   R visitSetVariable(InstructionSetVariable instruction);
 
-   R handleScript(InstructionScript instruction);
+   R visitSetVariable(SetVariableInstruction instruction);
+
+   R handleScript(ScriptInstruction instruction);
 
    R handleResolveVariable(GetVariableInstruction instruction);
 
@@ -26,4 +28,5 @@ public interface InstructionVisitor<R> {
 
    R handleBooleanCondition(BooleanConditionInstruction instruction);
 
+   R handleConditional(ConditionalInstruction instruction);
 }

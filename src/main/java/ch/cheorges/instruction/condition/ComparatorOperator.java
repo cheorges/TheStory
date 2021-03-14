@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 import ch.cheorges.exception.TypeCompareException;
 
-public enum ConditionOperator {
+public enum ComparatorOperator {
    GE, LE, GEQ, LEQ, EQ, NOT_EQ;
 
    public Boolean handle(Object leftValue, Object rightValue) {

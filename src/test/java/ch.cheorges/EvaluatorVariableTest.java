@@ -226,4 +226,10 @@ public class EvaluatorVariableTest extends BaseEvaluatorTest {
       assertThat((BigDecimal) parseExpression("X with 1")).isEqualToIgnoringScale(BigDecimal.ONE);
    }
 
+   @Test
+   public void reset() throws Exception {
+      addVariable("dog", 1);
+      assertThat(parseExpression("Put dog into your cat")).isEqualTo(1);
+   }
+
 }
