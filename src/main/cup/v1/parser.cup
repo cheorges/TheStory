@@ -8,6 +8,7 @@ import ch.cheorges.instruction.type.*;
 import ch.cheorges.instruction.variable.*;
 import ch.cheorges.instruction.math.*;
 import ch.cheorges.instruction.condition.*;
+import ch.cheorges.instruction.loop.*;
 
 class Parser;
 
@@ -17,12 +18,13 @@ terminal    String PREFIX;
 terminal    String NUMBER;
 terminal    Boolean TRUE, FALSE;
 
-terminal    LET, PUT, INTO, BE, NOW, WILL_BE, IF, ELSE;
+terminal    LET, PUT, INTO, BE, NOW, WILL_BE, IF, ELSE, WHILE;
 terminal    ADD, SUB, MUL, DIV;
 terminal    GE, LE, GEQ, LEQ, EQ, NOT_EQ;
 terminal    LINE_TERMINATOR;
 
-non terminal    Instruction instruction;
+non terminal    Instruction program;
+non terminal    ArrayList<Instruction> instructions;
 non terminal    Instruction block;
 non terminal    String identifier;
 non terminal    Instruction assigment;
@@ -33,18 +35,21 @@ non terminal    Instruction conditional;
 non terminal    ComparatorOperator comparator;
 non terminal    Instruction bool;
 non terminal    MathOperator operator;
+non terminal    Instruction loop;
 
 precedence left DIV, SUB, ADD, MUL;
 
-start with instruction;
+start with program;
 
-instruction     ::= assigment:a {: RESULT = new ScriptInstruction(a, null); :}
-                  | operation:o {: RESULT = new ScriptInstruction(o, null); :}
-                  | condition:c {: RESULT = new ScriptInstruction(c, null); :}
-                  | conditional:c {: RESULT = new ScriptInstruction(c, null); :}
+program         ::= instructions:i {: RESULT = new ProgramInstruction(i); :};
+
+instructions    ::= {: RESULT = new ArrayList<Instruction>(); :}
+                  | instructions:i assigment:a {: RESULT = i; RESULT.add(a); :}
+                  | instructions:i conditional:c {: RESULT = i; RESULT.add(c); :}
+                  | instructions:i loop:l {: RESULT = i; RESULT.add(l); :}
                   ;
 
-block           ::= instruction:i LINE_TERMINATOR {: RESULT = new ScriptInstruction(i, null); :};
+block           ::= program:p LINE_TERMINATOR {: RESULT = p; :};
 
 assigment       ::= PUT value:v INTO identifier:i {: RESULT = new SetVariableInstruction(i, v); :}
                   | LET identifier:i BE value:v {: RESULT = new SetVariableInstruction(i, v); :}
@@ -91,3 +96,5 @@ comparator      ::= GE {: RESULT = ComparatorOperator.GE; :}
                   | EQ {: RESULT = ComparatorOperator.EQ; :}
                   | NOT_EQ {: RESULT = ComparatorOperator.NOT_EQ; :}
                   ;
+
+loop            ::= WHILE condition:c LINE_TERMINATOR block:b LINE_TERMINATOR {: RESULT = new LoopInstruction(c, b); :};

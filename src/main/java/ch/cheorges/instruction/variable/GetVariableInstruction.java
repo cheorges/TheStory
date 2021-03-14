@@ -12,7 +12,7 @@ public class GetVariableInstruction extends Instruction {
 
    @Override
    public <R> R acceptVisitor(InstructionVisitor<R> visitor) {
-      return visitor.handleResolveVariable(this);
+      return visitor.handleGetVariable(this);
    }
 
    public String getIdentifier() {

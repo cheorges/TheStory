@@ -7,7 +7,10 @@ import java.util.Map;
 import ch.cheorges.instruction.InstructionVisitor;
 import ch.cheorges.instruction.condition.BooleanConditionInstruction;
 import ch.cheorges.instruction.condition.ConditionalInstruction;
+import ch.cheorges.instruction.flow.ProgramInstruction;
 import ch.cheorges.instruction.flow.ScriptInstruction;
+import ch.cheorges.instruction.flow.VoidObject;
+import ch.cheorges.instruction.loop.LoopInstruction;
 import ch.cheorges.instruction.math.MathOperationInstruction;
 import ch.cheorges.instruction.type.BooleanInstruction;
 import ch.cheorges.instruction.type.NumberInstruction;
@@ -35,7 +38,7 @@ public class Evaluator implements InstructionVisitor<Object> {
    }
 
    @Override
-   public Object handleResolveVariable(GetVariableInstruction instruction) {
+   public Object handleGetVariable(GetVariableInstruction instruction) {
       return context.get(instruction.getIdentifier().toLowerCase(Locale.ROOT));
    }
 
@@ -83,6 +86,24 @@ public class Evaluator implements InstructionVisitor<Object> {
          return instruction.getTrueBlock().acceptVisitor(this);
       }
       return instruction.getFalseBlock().acceptVisitor(this);
+   }
+
+   @Override
+   public Object handleLoop(LoopInstruction instruction) {
+      while ((Boolean) instruction.getCondition().acceptVisitor(this)) {
+         instruction.getBlock().acceptVisitor(this);
+      }
+      return new VoidObject();
+   }
+
+   @Override
+   public Object handleProgram(ProgramInstruction instruction) {
+      instruction.getInstructions().forEach(i -> instruction.acceptVisitor(this));
+      if (!instruction.getInstructions().isEmpty()) {
+         final int lastInstruction = instruction.getInstructions().size() - 1;
+         return instruction.getInstructions().get(lastInstruction).acceptVisitor(this);
+      }
+      return new VoidObject();
    }
 
 }
