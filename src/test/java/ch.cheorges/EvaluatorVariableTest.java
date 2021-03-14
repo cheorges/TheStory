@@ -223,13 +223,7 @@ public class EvaluatorVariableTest extends BaseEvaluatorTest {
    @Test
    public void case_insensitive() throws Exception {
       addVariable("x", 0);
-      assertThat((BigDecimal) parseExpression("X with 1")).isEqualToIgnoringScale(BigDecimal.ONE);
-   }
-
-   @Test
-   public void reset() throws Exception {
-      addVariable("dog", 1);
-      assertThat(parseExpression("Put dog into your cat")).isEqualTo(1);
+      assertThat(parseExpression("Put X into foo")).isEqualTo(0);
    }
 
 }

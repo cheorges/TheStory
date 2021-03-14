@@ -8,8 +8,6 @@ import ch.cheorges.instruction.InstructionVisitor;
 import ch.cheorges.instruction.condition.BooleanConditionInstruction;
 import ch.cheorges.instruction.condition.ConditionalInstruction;
 import ch.cheorges.instruction.flow.ProgramInstruction;
-import ch.cheorges.instruction.flow.ScriptInstruction;
-import ch.cheorges.instruction.flow.VoidObject;
 import ch.cheorges.instruction.loop.LoopInstruction;
 import ch.cheorges.instruction.math.MathOperationInstruction;
 import ch.cheorges.instruction.type.BooleanInstruction;
@@ -58,15 +56,6 @@ public class Evaluator implements InstructionVisitor<Object> {
    }
 
    @Override
-   public Object handleScript(ScriptInstruction instruction) {
-      final int indexOfLastInstruction = instruction.getInstructions().size() - 1;
-      for (int index = 0; index < indexOfLastInstruction; index++) {
-         instruction.getInstructions().get(index).acceptVisitor(this);
-      }
-      return instruction.getInstructions().get(indexOfLastInstruction).acceptVisitor(this);
-   }
-
-   @Override
    public Object handleMathOperation(MathOperationInstruction instruction) {
       return instruction.getOperator().handle(
             instruction.getLeftValue().acceptVisitor(this),
@@ -93,17 +82,16 @@ public class Evaluator implements InstructionVisitor<Object> {
       while ((Boolean) instruction.getCondition().acceptVisitor(this)) {
          instruction.getBlock().acceptVisitor(this);
       }
-      return new VoidObject();
+      return null;
    }
 
    @Override
    public Object handleProgram(ProgramInstruction instruction) {
-      instruction.getInstructions().forEach(i -> instruction.acceptVisitor(this));
-      if (!instruction.getInstructions().isEmpty()) {
-         final int lastInstruction = instruction.getInstructions().size() - 1;
-         return instruction.getInstructions().get(lastInstruction).acceptVisitor(this);
+      final int indexOfLastInstruction = instruction.getInstructions().size() - 1;
+      for (int index = 0; index < indexOfLastInstruction; index++) {
+         instruction.getInstructions().get(index).acceptVisitor(this);
       }
-      return new VoidObject();
+      return instruction.getInstructions().get(indexOfLastInstruction).acceptVisitor(this);
    }
 
 }

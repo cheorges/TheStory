@@ -13,7 +13,7 @@ public class EvaluatorConditionTest extends BaseEvaluatorTest {
       assertThat((BigDecimal) parseExpression("""
             If yes
             Put 1 into x
-                        
+          
             """)).isEqualToIgnoringScale(BigDecimal.ONE);
    }
 
@@ -24,7 +24,7 @@ public class EvaluatorConditionTest extends BaseEvaluatorTest {
             Put 1 into x
             Else
             Put 0 into x
-
+            
             """)).isEqualToIgnoringScale(BigDecimal.ZERO);
    }
 

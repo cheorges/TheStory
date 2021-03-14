@@ -80,13 +80,8 @@ operator        ::= ADD {: RESULT = MathOperator.ADD; :}
                   | DIV {: RESULT = MathOperator.DIV; :}
                   ;
 
-conditional     ::= IF condition:c LINE_TERMINATOR block:b LINE_TERMINATOR {: RESULT = new ConditionalInstruction(c, b); :}
-                  | IF condition:c LINE_TERMINATOR block:b1 ELSE LINE_TERMINATOR block:b2 LINE_TERMINATOR {: RESULT = new ConditionalInstruction(c, b1, b2); :}
-                  ;
-
 condition       ::= value:l comparator:c value:r {: RESULT = new BooleanConditionInstruction(l, r, c); :}
-                  | bool:b {: RESULT = b; :}
-                  | identifier:i {: RESULT = new GetVariableInstruction(i); :}
+                  | value:v {: RESULT = v; :}
                   ;
 
 comparator      ::= GE {: RESULT = ComparatorOperator.GE; :}
@@ -95,6 +90,10 @@ comparator      ::= GE {: RESULT = ComparatorOperator.GE; :}
                   | LEQ {: RESULT = ComparatorOperator.LEQ; :}
                   | EQ {: RESULT = ComparatorOperator.EQ; :}
                   | NOT_EQ {: RESULT = ComparatorOperator.NOT_EQ; :}
+                  ;
+
+conditional     ::= IF condition:c LINE_TERMINATOR block:b LINE_TERMINATOR {: RESULT = new ConditionalInstruction(c, b); :}
+                  | IF condition:c LINE_TERMINATOR block:b1 ELSE LINE_TERMINATOR block:b2 LINE_TERMINATOR {: RESULT = new ConditionalInstruction(c, b1, b2); :}
                   ;
 
 loop            ::= WHILE condition:c LINE_TERMINATOR block:b LINE_TERMINATOR {: RESULT = new LoopInstruction(c, b); :};

@@ -2,7 +2,6 @@ package ch.cheorges.instruction.condition;
 
 import ch.cheorges.instruction.Instruction;
 import ch.cheorges.instruction.InstructionVisitor;
-import ch.cheorges.instruction.flow.ScriptInstruction;
 
 public class ConditionalInstruction extends Instruction {
    private final Instruction condition;
@@ -12,7 +11,7 @@ public class ConditionalInstruction extends Instruction {
    public ConditionalInstruction(Instruction condition, Instruction trueBlock) {
       this.condition = condition;
       this.trueBlock = trueBlock;
-      this.falseBlock = new ScriptInstruction();
+      this.falseBlock = null;
    }
 
    public ConditionalInstruction(Instruction condition, Instruction trueBlock, Instruction falseBlock) {
