@@ -46,9 +46,8 @@ non terminal    Instruction bool_evaluator;
 
 precedence left DIV, SUB, ADD, MUL, GE, LE, GEQ, LEQ, EQ, NOT_EQ;
 precedence left value, PREFIX, IDENTIFIER, NAME_IDENTIFIER;
-precedence left value, STRING_LITERAL;
-precedence left value, NUMBER;
-precedence left value, TRUE, FALSE;
+precedence left value, STRING_LITERAL, NUMBER, TRUE, FALSE;
+precedence left value, COMMA, AND;
 
 start with program;
 
@@ -60,7 +59,6 @@ instructions    ::= {: RESULT = new ArrayList<Instruction>(); :}
                   | instructions:i conditional:c {: RESULT = i; RESULT.add(c); :}
                   | instructions:i loop:l {: RESULT = i; RESULT.add(l); :}
                   | instructions:i function:f {: RESULT = i; RESULT.add(f); :}
-                  | instructions:i function_call:f {: RESULT = i; RESULT.add(f); :}
                   ;
 
 block           ::= program:p {: RESULT = p; :};
@@ -85,6 +83,7 @@ value           ::= NUMBER:n {: RESULT = new NumberInstruction(n); :}
                   | operation:o {: RESULT = o; :}
                   | condition:c {: RESULT = c; :}
                   | identifier:i {: RESULT = new GetVariableInstruction(i); :}
+                  | function_call:f {: RESULT = f; :}
                   ;
 
 bool            ::= TRUE:b {: RESULT = new BooleanInstruction(b); :}

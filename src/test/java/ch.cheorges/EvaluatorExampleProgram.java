@@ -16,13 +16,20 @@ public class EvaluatorExampleProgram extends BaseEvaluatorTest {
    @Test
    public void hugo() throws Exception {
       String code = """
-             Modulus takes number and divisor
-             While number is as high as divisor
-             Put number without divisor into number
+             Modulus takes Number and Divisor
+             While Number is as high as Divisor
+             Put Number without Divisor into Number
              
              
+             Let Limit be 100
+             Let Counter be 0
+             Let Hugo be 0
+             While Counter is not Limit
+             Put Modulus taking Counter and 7 into result
+             If result is 0
+             Now Huge will be Hugo plus 1
              
-             5 with 5
+             
              """;
 
       assertThat((BigDecimal) parseExpression(code)).isEqualToIgnoringScale(10);

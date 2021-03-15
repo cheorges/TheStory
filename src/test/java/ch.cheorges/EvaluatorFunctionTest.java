@@ -30,4 +30,16 @@ public class EvaluatorFunctionTest extends BaseEvaluatorTest {
             """)).isEqualToIgnoringScale(2);
    }
 
+   /* TODO: Fix variable context bug. */
+   @Test
+   public void function_and_variables() throws Exception {
+      assertThat((BigDecimal) parseExpression("""
+            Let foo be 2
+            Square takes foo
+            foo times foo
+            
+            Square taking foo
+            """)).isEqualToIgnoringScale(4);
+   }
+
 }
