@@ -60,4 +60,20 @@ Number and String Literal will evaluate as `false`!
 
 ### Loops
 
-Loop expression start with the `While` or `Until` (`while` or `until`) keyword, followed by a condition or a boolean value. The code block ends by a blank line.
+Loop expression start with the `While` or `Until` (`while` or `until`) keyword, followed by a condition or a boolean value. The code block ends by a
+blank line.
+
+### Function
+
+Functions are declared with a variable name followed by the `takes` keyword and a list of arguments separated by one of the following: `and` or `,`.
+The code block of a function ends by a blank line. Functions are called using the `taking` keyword and must have at least one argument. Multiple
+arguments are separated with one of the following: `and` or `,`.
+
+The last statement of a function will be also a return value.
+
+```
+Square takes X
+X times X
+
+Square taking 4
+```

@@ -4,10 +4,15 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import ch.cheorges.exception.FunctionIdentifierMissmatchException;
+import ch.cheorges.exception.IdentifierNotDefinedException;
 import ch.cheorges.instruction.InstructionVisitor;
 import ch.cheorges.instruction.condition.BooleanConditionInstruction;
 import ch.cheorges.instruction.condition.ConditionalInstruction;
 import ch.cheorges.instruction.flow.ProgramInstruction;
+import ch.cheorges.instruction.function.FunctionCallInstruction;
+import ch.cheorges.instruction.function.FunctionDefinitionInstruction;
+import ch.cheorges.instruction.function.SubScopeContext;
 import ch.cheorges.instruction.loop.LoopInstruction;
 import ch.cheorges.instruction.math.MathOperationInstruction;
 import ch.cheorges.instruction.type.BooleanInstruction;
@@ -16,7 +21,7 @@ import ch.cheorges.instruction.type.StringLiteralInstruction;
 import ch.cheorges.instruction.variable.GetVariableInstruction;
 import ch.cheorges.instruction.variable.SetVariableInstruction;
 
-public class Evaluator implements InstructionVisitor<Object> {
+public class Evaluator extends SubScopeContext implements InstructionVisitor<Object> {
    private final Map<String, Object> context;
 
    public Evaluator(Map<String, Object> context) {
@@ -37,6 +42,9 @@ public class Evaluator implements InstructionVisitor<Object> {
 
    @Override
    public Object handleGetVariable(GetVariableInstruction instruction) {
+      context.computeIfAbsent(instruction.getIdentifier().toLowerCase(Locale.ROOT), identifier -> {
+         throw new IdentifierNotDefinedException(identifier);
+      });
       return context.get(instruction.getIdentifier().toLowerCase(Locale.ROOT));
    }
 
@@ -92,6 +100,33 @@ public class Evaluator implements InstructionVisitor<Object> {
          instruction.getInstructions().get(index).acceptVisitor(this);
       }
       return instruction.getInstructions().get(indexOfLastInstruction).acceptVisitor(this);
+   }
+
+   @Override
+   public Object handleFunctionCall(FunctionCallInstruction instruction) {
+      FunctionDefinitionInstruction function = getFunction(instruction.getIdentifier());
+
+      if (function.getIdentifiers().size() != instruction.getValues().size()) {
+         throw new FunctionIdentifierMissmatchException();
+      }
+
+      Map<String, Object> context = new HashMap<>();
+      for (int index = 0; index < instruction.getValues().size(); index++) {
+         context.put(
+               function.getIdentifiers().get(index).toLowerCase(Locale.ROOT),
+               instruction.getValues().get(index).acceptVisitor(this));
+      }
+
+      createContext(context);
+      Object result = function.getBlock().acceptVisitor(this);
+      destroyContext();
+      return result;
+   }
+
+   @Override
+   public Object handleFunctionDefinition(FunctionDefinitionInstruction instruction) {
+      addFunction(instruction.getIdentifier(), instruction);
+      return null;
    }
 
 }

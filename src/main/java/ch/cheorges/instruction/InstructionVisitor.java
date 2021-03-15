@@ -3,6 +3,8 @@ package ch.cheorges.instruction;
 import ch.cheorges.instruction.condition.BooleanConditionInstruction;
 import ch.cheorges.instruction.condition.ConditionalInstruction;
 import ch.cheorges.instruction.flow.ProgramInstruction;
+import ch.cheorges.instruction.function.FunctionCallInstruction;
+import ch.cheorges.instruction.function.FunctionDefinitionInstruction;
 import ch.cheorges.instruction.loop.LoopInstruction;
 import ch.cheorges.instruction.math.MathOperationInstruction;
 import ch.cheorges.instruction.type.BooleanInstruction;
@@ -32,4 +34,8 @@ public interface InstructionVisitor<R> {
    R handleLoop(LoopInstruction instruction);
 
    R handleProgram(ProgramInstruction instruction);
+
+   R handleFunctionCall(FunctionCallInstruction instruction);
+
+   R handleFunctionDefinition(FunctionDefinitionInstruction instruction);
 }

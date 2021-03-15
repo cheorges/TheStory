@@ -47,7 +47,8 @@ InputCharacter = [^\r\n]
 WhiteSpace = {LineTerminator} | [ \t\f]
 
 Prefix = a|an|the|my|your
-Identifier = [a-zA-Z]+
+Identifier = [a-z]+
+NameIdentifier = [A-Z][a-z]+ | [A-Z]+
 
 BooleanTrue = yes|ok|right|true
 BooleanFalse = no|lies|wrong|false
@@ -69,6 +70,10 @@ StringIdentifier = [^\n\r\"\\]+
     (If|if)                             { return symbol(ParserSym.IF); }
     (Else|else)                         { return symbol(ParserSym.ELSE); }
     (While|while|Until|until)           { return symbol(ParserSym.WHILE); }
+    "takes"                             { return symbol(ParserSym.TAKES); }
+    "taking"                            { return symbol(ParserSym.TAKING); }
+    "and"                               { return symbol(ParserSym.AND); }
+    ","                                 { return symbol(ParserSym.COMMA); }
     \"                                  { string.setLength(0); yybegin(STRING); }
 
     (with|plus)                         { return symbol(ParserSym.ADD); }
@@ -93,7 +98,9 @@ StringIdentifier = [^\n\r\"\\]+
     "is as small as"                    { return symbol(ParserSym.LEQ); }
     "is as weak as"                     { return symbol(ParserSym.LEQ); }
     "is exactly the same as"            { return symbol(ParserSym.EQ); }
+    "is"                                { return symbol(ParserSym.EQ); }
     "is not the same as"                { return symbol(ParserSym.NOT_EQ); }
+    "is not"                            { return symbol(ParserSym.NOT_EQ); }
 
     {BlockTerminator}                   { return symbol(ParserSym.BLOCK_TERMINATOR); }
 
@@ -106,6 +113,7 @@ StringIdentifier = [^\n\r\"\\]+
 
     {Prefix}                            { return symbol(ParserSym.PREFIX, yytext()); }
     {Identifier}                        { return symbol(ParserSym.IDENTIFIER, yytext()); }
+    {NameIdentifier}                    { return symbol(ParserSym.NAME_IDENTIFIER, yytext()); }
 }
 
 <STRING> {

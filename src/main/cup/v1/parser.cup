@@ -9,16 +9,17 @@ import ch.cheorges.instruction.variable.*;
 import ch.cheorges.instruction.math.*;
 import ch.cheorges.instruction.condition.*;
 import ch.cheorges.instruction.loop.*;
+import ch.cheorges.instruction.function.*;
 
 class Parser;
 
 terminal    String STRING_LITERAL;
-terminal    String IDENTIFIER;
+terminal    String IDENTIFIER, NAME_IDENTIFIER;
 terminal    String PREFIX;
 terminal    String NUMBER;
 terminal    Boolean TRUE, FALSE;
 
-terminal    LET, PUT, INTO, BE, NOW, WILL_BE, IF, ELSE, WHILE;
+terminal    LET, PUT, INTO, BE, NOW, WILL_BE, IF, ELSE, WHILE, TAKING, TAKES, AND, COMMA;
 terminal    ADD, SUB, MUL, DIV;
 terminal    GE, LE, GEQ, LEQ, EQ, NOT_EQ;
 terminal    BLOCK_TERMINATOR;
@@ -27,8 +28,11 @@ non terminal    Instruction program;
 non terminal    ArrayList<Instruction> instructions;
 non terminal    Instruction block;
 non terminal    String identifier;
+non terminal    String name_identifier;
+non terminal    ArrayList<String> identifiers;
 non terminal    Instruction assigment;
 non terminal    Instruction value;
+non terminal    ArrayList<Instruction> values;
 non terminal    Instruction operation;
 non terminal    Instruction condition;
 non terminal    Instruction conditional;
@@ -36,8 +40,15 @@ non terminal    ComparatorOperator comparator;
 non terminal    Instruction bool;
 non terminal    MathOperator operator;
 non terminal    Instruction loop;
+non terminal    Instruction function;
+non terminal    Instruction function_call;
+non terminal    Instruction bool_evaluator;
 
 precedence left DIV, SUB, ADD, MUL, GE, LE, GEQ, LEQ, EQ, NOT_EQ;
+precedence left value, PREFIX, IDENTIFIER, NAME_IDENTIFIER;
+precedence left value, STRING_LITERAL;
+precedence left value, NUMBER;
+precedence left value, TRUE, FALSE;
 
 start with program;
 
@@ -45,8 +56,11 @@ program         ::= instructions:i {: RESULT = new ProgramInstruction(i); :};
 
 instructions    ::= {: RESULT = new ArrayList<Instruction>(); :}
                   | instructions:i assigment:a {: RESULT = i; RESULT.add(a); :}
+                  | instructions:i value:v {: RESULT = i; RESULT.add(v); :}
                   | instructions:i conditional:c {: RESULT = i; RESULT.add(c); :}
                   | instructions:i loop:l {: RESULT = i; RESULT.add(l); :}
+                  | instructions:i function:f {: RESULT = i; RESULT.add(f); :}
+                  | instructions:i function_call:f {: RESULT = i; RESULT.add(f); :}
                   ;
 
 block           ::= program:p {: RESULT = p; :};
@@ -57,14 +71,20 @@ assigment       ::= PUT value:v INTO identifier:i {: RESULT = new SetVariableIns
                   ;
 
 identifier      ::= IDENTIFIER:i {: RESULT = i; :}
-                  | identifier:i1 IDENTIFIER:i2 {: RESULT = i1 + i2; :}
                   | PREFIX:p IDENTIFIER:i {: RESULT = p + i; :}
+                  | name_identifier:i {: RESULT = i; :}
+                  ;
+
+name_identifier ::= NAME_IDENTIFIER:i {: RESULT = i; :}
+                  | name_identifier:i1 NAME_IDENTIFIER:i2 {: RESULT = i1 + i2; :}
                   ;
 
 value           ::= NUMBER:n {: RESULT = new NumberInstruction(n); :}
                   | STRING_LITERAL:s {: RESULT = new StringLiteralInstruction(s); :}
+                  | bool:b {: RESULT = b; :}
                   | operation:o {: RESULT = o; :}
                   | condition:c {: RESULT = c; :}
+                  | identifier:i {: RESULT = new GetVariableInstruction(i); :}
                   ;
 
 bool            ::= TRUE:b {: RESULT = new BooleanInstruction(b); :}
@@ -79,10 +99,7 @@ operator        ::= ADD {: RESULT = MathOperator.ADD; :}
                   | DIV {: RESULT = MathOperator.DIV; :}
                   ;
 
-condition       ::= value:l comparator:c value:r {: RESULT = new BooleanConditionInstruction(l, r, c); :}
-                  | bool:b {: RESULT = b; :}
-                  | identifier:i {: RESULT = new GetVariableInstruction(i); :}
-                  ;
+condition       ::= value:l comparator:c value:r {: RESULT = new BooleanConditionInstruction(l, r, c); :};
 
 comparator      ::= GE {: RESULT = ComparatorOperator.GE; :}
                   | LE {: RESULT = ComparatorOperator.LE; :}
@@ -92,8 +109,29 @@ comparator      ::= GE {: RESULT = ComparatorOperator.GE; :}
                   | NOT_EQ {: RESULT = ComparatorOperator.NOT_EQ; :}
                   ;
 
-conditional     ::= IF condition:c block:b BLOCK_TERMINATOR {: RESULT = new ConditionalInstruction(c, b); :}
-                  | IF condition:c block:b1 ELSE block:b2 BLOCK_TERMINATOR {: RESULT = new ConditionalInstruction(c, b1, b2); :}
+bool_evaluator   ::= condition:c {: RESULT = c; :}
+                  | bool:b {: RESULT = b; :}
+                  | identifier:i {: RESULT = new GetVariableInstruction(i); :}
                   ;
 
-loop            ::= WHILE condition:c block:b BLOCK_TERMINATOR {: RESULT = new LoopInstruction(c, b); :};
+conditional     ::= IF bool_evaluator:b1 block:b2 BLOCK_TERMINATOR {: RESULT = new ConditionalInstruction(b1, b2); :}
+                  | IF bool_evaluator:b1 block:b2 ELSE block:b3 BLOCK_TERMINATOR {: RESULT = new ConditionalInstruction(b1, b2, b3); :}
+                  ;
+
+loop            ::= WHILE bool_evaluator:b1 block:b2 BLOCK_TERMINATOR {: RESULT = new LoopInstruction(b1, b2); :};
+
+identifiers     ::= {: RESULT = new ArrayList<String>(); :}
+                  | identifier:i {: RESULT = new ArrayList<String>(); RESULT.add(i); :}
+                  | identifiers:l COMMA identifier:i {: RESULT = l; RESULT.add(i); :}
+                  | identifiers:l AND identifier:i {: RESULT = l; RESULT.add(i); :}
+                  ;
+
+values          ::= {: RESULT = new ArrayList<Instruction>(); :}
+                  | value:v {: RESULT = new ArrayList<Instruction>(); RESULT.add(v); :}
+                  | values:l COMMA value:v {: RESULT = l; RESULT.add(v); :}
+                  | values:l AND value:v {: RESULT = l; RESULT.add(v); :}
+                  ;
+
+function        ::= identifier:i TAKES identifiers:l block:b BLOCK_TERMINATOR {: RESULT = new FunctionDefinitionInstruction(i, l, b); :};
+
+function_call    ::= identifier:i TAKING values:l {: RESULT = new FunctionCallInstruction(i, l); :};
