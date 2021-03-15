@@ -68,7 +68,7 @@ StringIdentifier = [^\n\r\"\\]+
     "will be"                           { return symbol(ParserSym.WILL_BE); }
     (If|if)                             { return symbol(ParserSym.IF); }
     (Else|else)                         { return symbol(ParserSym.ELSE); }
-    (While|while)                       { return symbol(ParserSym.WHILE); }
+    (While|while|Until|until)           { return symbol(ParserSym.WHILE); }
     \"                                  { string.setLength(0); yybegin(STRING); }
 
     (with|plus)                         { return symbol(ParserSym.ADD); }

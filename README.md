@@ -60,4 +60,4 @@ Number and String Literal will evaluate as `false`!
 
 ### Loops
 
-Loop expression start with the `While` (`while`) keyword, followed by a condition or a boolean value. The code block ends by a blank line.
+Loop expression start with the `While` or `Until` (`while` or `until`) keyword, followed by a condition or a boolean value. The code block ends by a blank line.
