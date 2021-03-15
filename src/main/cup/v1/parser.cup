@@ -21,7 +21,7 @@ terminal    Boolean TRUE, FALSE;
 terminal    LET, PUT, INTO, BE, NOW, WILL_BE, IF, ELSE, WHILE;
 terminal    ADD, SUB, MUL, DIV;
 terminal    GE, LE, GEQ, LEQ, EQ, NOT_EQ;
-terminal    LINE_TERMINATOR;
+terminal    BLOCK_TERMINATOR;
 
 non terminal    Instruction program;
 non terminal    ArrayList<Instruction> instructions;
@@ -37,7 +37,7 @@ non terminal    Instruction bool;
 non terminal    MathOperator operator;
 non terminal    Instruction loop;
 
-precedence left DIV, SUB, ADD, MUL;
+precedence left DIV, SUB, ADD, MUL, GE, LE, GEQ, LEQ, EQ, NOT_EQ;
 
 start with program;
 
@@ -49,7 +49,7 @@ instructions    ::= {: RESULT = new ArrayList<Instruction>(); :}
                   | instructions:i loop:l {: RESULT = i; RESULT.add(l); :}
                   ;
 
-block           ::= program:p LINE_TERMINATOR {: RESULT = p; :};
+block           ::= program:p {: RESULT = p; :};
 
 assigment       ::= PUT value:v INTO identifier:i {: RESULT = new SetVariableInstruction(i, v); :}
                   | LET identifier:i BE value:v {: RESULT = new SetVariableInstruction(i, v); :}
@@ -63,9 +63,8 @@ identifier      ::= IDENTIFIER:i {: RESULT = i; :}
 
 value           ::= NUMBER:n {: RESULT = new NumberInstruction(n); :}
                   | STRING_LITERAL:s {: RESULT = new StringLiteralInstruction(s); :}
-                  | bool:b {: RESULT = b; :}
-                  | identifier:i {: RESULT = new GetVariableInstruction(i); :}
                   | operation:o {: RESULT = o; :}
+                  | condition:c {: RESULT = c; :}
                   ;
 
 bool            ::= TRUE:b {: RESULT = new BooleanInstruction(b); :}
@@ -81,7 +80,8 @@ operator        ::= ADD {: RESULT = MathOperator.ADD; :}
                   ;
 
 condition       ::= value:l comparator:c value:r {: RESULT = new BooleanConditionInstruction(l, r, c); :}
-                  | value:v {: RESULT = v; :}
+                  | bool:b {: RESULT = b; :}
+                  | identifier:i {: RESULT = new GetVariableInstruction(i); :}
                   ;
 
 comparator      ::= GE {: RESULT = ComparatorOperator.GE; :}
@@ -92,8 +92,8 @@ comparator      ::= GE {: RESULT = ComparatorOperator.GE; :}
                   | NOT_EQ {: RESULT = ComparatorOperator.NOT_EQ; :}
                   ;
 
-conditional     ::= IF condition:c LINE_TERMINATOR block:b LINE_TERMINATOR {: RESULT = new ConditionalInstruction(c, b); :}
-                  | IF condition:c LINE_TERMINATOR block:b1 ELSE LINE_TERMINATOR block:b2 LINE_TERMINATOR {: RESULT = new ConditionalInstruction(c, b1, b2); :}
+conditional     ::= IF condition:c block:b BLOCK_TERMINATOR {: RESULT = new ConditionalInstruction(c, b); :}
+                  | IF condition:c block:b1 ELSE block:b2 BLOCK_TERMINATOR {: RESULT = new ConditionalInstruction(c, b1, b2); :}
                   ;
 
-loop            ::= WHILE condition:c LINE_TERMINATOR block:b LINE_TERMINATOR {: RESULT = new LoopInstruction(c, b); :};
+loop            ::= WHILE condition:c block:b BLOCK_TERMINATOR {: RESULT = new LoopInstruction(c, b); :};

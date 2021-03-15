@@ -12,8 +12,8 @@ public class EvaluatorConditionTest extends BaseEvaluatorTest {
    public void if_flow() throws Exception {
       assertThat((BigDecimal) parseExpression("""
             If yes
-            Put 1 into x
-          
+            Put 1 into foo
+                      
             """)).isEqualToIgnoringScale(BigDecimal.ONE);
    }
 
@@ -21,10 +21,10 @@ public class EvaluatorConditionTest extends BaseEvaluatorTest {
    public void if_else_flow() throws Exception {
       assertThat((BigDecimal) parseExpression("""
             If no
-            Put 1 into x
+            Put 1 into foo
             Else
-            Put 0 into x
-            
+            Put 0 into foo
+                        
             """)).isEqualToIgnoringScale(BigDecimal.ZERO);
    }
 
@@ -33,10 +33,10 @@ public class EvaluatorConditionTest extends BaseEvaluatorTest {
       assertThat((BigDecimal) parseExpression("""
             If yes
             If yes
-            Put 1 into x
-
-
-
+            Put 1 into foo
+            
+            
+            
             """)).isEqualToIgnoringScale(BigDecimal.ONE);
    }
 
@@ -44,13 +44,12 @@ public class EvaluatorConditionTest extends BaseEvaluatorTest {
    public void if_else_with_neasted_flow() throws Exception {
       assertThat((BigDecimal) parseExpression("""
             If wrong
-            Put 1 into x
             Else
             If yes
-            Put 0 into x
-
-
-
+            Put 0 into foo
+            
+            
+            
             """)).isEqualToIgnoringScale(BigDecimal.ZERO);
    }
 
@@ -62,8 +61,7 @@ public class EvaluatorConditionTest extends BaseEvaluatorTest {
             Put 1 into x
             Else
             Put 0 into x
-
-
+            
             Else
             Put 2 into x
 

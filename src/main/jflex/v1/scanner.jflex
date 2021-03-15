@@ -42,6 +42,7 @@ import java_cup.runtime.Symbol;
 %eofval}
 
 LineTerminator = \r|\n|\r\n
+BlockTerminator = \r\r|\n\n|\r\n\r\n
 InputCharacter = [^\r\n]
 WhiteSpace = {LineTerminator} | [ \t\f]
 
@@ -94,11 +95,14 @@ StringIdentifier = [^\n\r\"\\]+
     "is exactly the same as"            { return symbol(ParserSym.EQ); }
     "is not the same as"                { return symbol(ParserSym.NOT_EQ); }
 
-    {LineTerminator}                    { return symbol(ParserSym.LINE_TERMINATOR); }
+    {BlockTerminator}                   { return symbol(ParserSym.BLOCK_TERMINATOR); }
+
     {Number}                            { return symbol(ParserSym.NUMBER, yytext()); }
     {BooleanTrue}                       { return symbol(ParserSym.TRUE, true); }
     {BooleanFalse}                      { return symbol(ParserSym.FALSE, false); }
+
     {WhiteSpace}                        { /* ignore */ }
+    {LineTerminator}                    { /* ignore */ }
 
     {Prefix}                            { return symbol(ParserSym.PREFIX, yytext()); }
     {Identifier}                        { return symbol(ParserSym.IDENTIFIER, yytext()); }
