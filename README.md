@@ -53,9 +53,11 @@ A variable ...
 
 ### Conditionals
 
-Conditional expressions start with the `If` (`if`) keyword, followed by an expression. An `Else` (`else`) block
-can be written after an If block. The code block ends by a blank line.
+Conditional expressions start with the `If` (`if`) keyword, followed by a condition or a boolean value. An `Else` (`else`) block can be written
+directly after an `If` block. The code block of a `If` or `If-Else` ends by a blank line.
 
 Number and String Literal will evaluate as `false`!
 
 ### Loops
+
+Loop expression start with the `While` (`while`) keyword, followed by a condition or a boolean value. The code block ends by a blank line.

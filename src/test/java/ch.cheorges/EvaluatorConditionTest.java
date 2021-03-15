@@ -58,14 +58,35 @@ public class EvaluatorConditionTest extends BaseEvaluatorTest {
       assertThat((BigDecimal) parseExpression("""
             If ok
             If lies
-            Put 1 into x
+            Put 1 into foo
             Else
-            Put 0 into x
+            Put 0 into foo
             
             Else
-            Put 2 into x
+            Put 2 into foo
 
             """)).isEqualToIgnoringScale(BigDecimal.ZERO);
    }
 
+   @Test
+   public void evaluate_number() throws Exception {
+      assertThat((BigDecimal) parseExpression("""
+            Put 1 into foo
+            If foo
+            Else
+            Put 0 into bar
+
+            """)).isEqualToIgnoringScale(BigDecimal.ZERO);
+   }
+
+   @Test
+   public void evaluate_string() throws Exception {
+      assertThat((BigDecimal) parseExpression("""
+            Put "yes" into foo
+            If foo
+            Else
+            Put 0 into bar
+
+            """)).isEqualToIgnoringScale(BigDecimal.ZERO);
+   }
 }
