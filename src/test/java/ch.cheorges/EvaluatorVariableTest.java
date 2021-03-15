@@ -226,4 +226,12 @@ public class EvaluatorVariableTest extends BaseEvaluatorTest {
       assertThat(parseExpression("Put X into foo")).isEqualTo(0);
    }
 
+   @Test
+   public void alias() throws Exception {
+      assertThat((BigDecimal) parseExpression("""
+            Let foo be 1
+            it
+            """)).isEqualToIgnoringScale(BigDecimal.ONE);
+   }
+
 }

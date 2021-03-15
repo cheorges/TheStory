@@ -48,6 +48,7 @@ WhiteSpace = {LineTerminator} | [ \t\f]
 
 Prefix = a|an|the|my|your
 Identifier = [a-z]+
+Alias = he|she|it|his|her|they|them
 NameIdentifier = [A-Z][a-z]+ | [A-Z]+
 
 BooleanTrue = yes|ok|right|true
@@ -114,6 +115,7 @@ StringIdentifier = [^\n\r\"\\]+
     {Prefix}                            { return symbol(ParserSym.PREFIX, yytext()); }
     {Identifier}                        { return symbol(ParserSym.IDENTIFIER, yytext()); }
     {NameIdentifier}                    { return symbol(ParserSym.NAME_IDENTIFIER, yytext()); }
+    {Alias}                             { return symbol(ParserSym.ALIAS, yytext()); }
 }
 
 <STRING> {

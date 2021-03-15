@@ -1,5 +1,6 @@
 package ch.cheorges;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -23,6 +24,7 @@ import ch.cheorges.instruction.variable.SetVariableInstruction;
 
 public class Evaluator extends SubScopeContext implements InstructionVisitor<Object> {
    private final Map<String, Object> context;
+   private String lastUsedIdentifier;
 
    public Evaluator(Map<String, Object> context) {
       this.context = context;
@@ -35,17 +37,13 @@ public class Evaluator extends SubScopeContext implements InstructionVisitor<Obj
    @Override
    public Object visitSetVariable(SetVariableInstruction instruction) {
       Object evaluatedValue = instruction.getValue().acceptVisitor(this);
-      context.put(instruction.getIdentifier().toLowerCase(Locale.ROOT), evaluatedValue);
-      // TODO: Is it better to return Type-Instruction?
+      setValueToContext(instruction.getIdentifier(), evaluatedValue);
       return evaluatedValue;
    }
 
    @Override
    public Object handleGetVariable(GetVariableInstruction instruction) {
-      context.computeIfAbsent(instruction.getIdentifier().toLowerCase(Locale.ROOT), identifier -> {
-         throw new IdentifierNotDefinedException(identifier);
-      });
-      return context.get(instruction.getIdentifier().toLowerCase(Locale.ROOT));
+      return getValueFromContext(instruction.getIdentifier());
    }
 
    @Override
@@ -129,4 +127,18 @@ public class Evaluator extends SubScopeContext implements InstructionVisitor<Obj
       return null;
    }
 
+   private void setValueToContext(String identifier, Object value) {
+      lastUsedIdentifier = identifier;
+      context.put(identifier.toLowerCase(Locale.ROOT), value);
+   }
+
+   private Object getValueFromContext(String identifier) {
+      if (Arrays.asList("he", "she", "it", "her", "his", "they").contains(identifier.toLowerCase(Locale.ROOT))) {
+         return context.get(lastUsedIdentifier);
+      }
+      context.computeIfAbsent(identifier, i -> {
+         throw new IdentifierNotDefinedException(i);
+      });
+      return context.get(identifier);
+   }
 }

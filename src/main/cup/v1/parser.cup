@@ -16,6 +16,7 @@ class Parser;
 terminal    String STRING_LITERAL;
 terminal    String IDENTIFIER, NAME_IDENTIFIER;
 terminal    String PREFIX;
+terminal    String ALIAS;
 terminal    String NUMBER;
 terminal    Boolean TRUE, FALSE;
 
@@ -45,7 +46,7 @@ non terminal    Instruction function_call;
 non terminal    Instruction bool_evaluator;
 
 precedence left DIV, SUB, ADD, MUL, GE, LE, GEQ, LEQ, EQ, NOT_EQ;
-precedence left value, PREFIX, IDENTIFIER, NAME_IDENTIFIER;
+precedence left value, PREFIX, ALIAS, IDENTIFIER, NAME_IDENTIFIER;
 precedence left value, STRING_LITERAL, NUMBER, TRUE, FALSE;
 precedence left value, COMMA, AND;
 
@@ -71,6 +72,7 @@ assigment       ::= PUT value:v INTO identifier:i {: RESULT = new SetVariableIns
 identifier      ::= IDENTIFIER:i {: RESULT = i; :}
                   | PREFIX:p IDENTIFIER:i {: RESULT = p + i; :}
                   | name_identifier:i {: RESULT = i; :}
+                  | ALIAS:a {: RESULT = a; :}
                   ;
 
 name_identifier ::= NAME_IDENTIFIER:i {: RESULT = i; :}
