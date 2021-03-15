@@ -1,16 +1,16 @@
 package ch.cheorges;
 
+import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.jupiter.api.AfterEach;
+
 import ch.cheorges.instruction.Instruction;
 import java_cup.runtime.ComplexSymbolFactory;
 import java_cup.runtime.Symbol;
 import v1.Parser;
 import v1.Scanner;
-
-import org.junit.jupiter.api.AfterEach;
-
-import java.io.StringReader;
-import java.util.HashMap;
-import java.util.Map;
 
 public class BaseEvaluatorTest {
    private final Map<String, Object> context = new HashMap<>();
