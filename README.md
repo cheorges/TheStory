@@ -4,7 +4,22 @@
 
 ## Quick Start
 
-Run this command `./gradlew build`
+Run this command `./gradlew build` *(JDK 15)* for build and execute test.
+
+### Requirement
+
+ * JDK 15
+
+## Start Interpreter
+
+Run this command `./gradlew runStory`. This command will interpret (valid) code that is written in the following describe programming language.
+
+Example program is stored under `programs/hugo`.
+
+```shell
+# Execute program:
+./gradlew runStory -DfilePath="<PATH_TO_THIS_PROJECT>/programs/hugo"
+```
 
 ## Language
 
@@ -16,7 +31,7 @@ Run this command `./gradlew build`
 
 ### Variable
 
-A variable can be set of two ways:
+A variable can be set one of the following ways:
 
 ```
 Let x be 1
@@ -75,4 +90,15 @@ Square takes X
 X times X
 
 Square taking 4
+```
+
+### Print
+
+The following keywords can be used to write variables or values into the console.
+
+```
+Say "Hello, World!"
+Shout 42
+Put 3.13 into pi
+Print pi
 ```

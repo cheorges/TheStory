@@ -7,6 +7,7 @@ import ch.cheorges.instruction.function.FunctionCallInstruction;
 import ch.cheorges.instruction.function.FunctionDefinitionInstruction;
 import ch.cheorges.instruction.loop.LoopInstruction;
 import ch.cheorges.instruction.math.MathOperationInstruction;
+import ch.cheorges.instruction.sout.PrintInstruction;
 import ch.cheorges.instruction.type.BooleanInstruction;
 import ch.cheorges.instruction.type.NumberInstruction;
 import ch.cheorges.instruction.type.StringLiteralInstruction;
@@ -38,4 +39,6 @@ public interface InstructionVisitor<R> {
    R handleFunctionCall(FunctionCallInstruction instruction);
 
    R handleFunctionDefinition(FunctionDefinitionInstruction instruction);
+
+   R handlePrintOut(PrintInstruction value);
 }

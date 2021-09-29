@@ -34,9 +34,9 @@ public class EvaluatorConditionTest extends BaseEvaluatorTest {
             If yes
             If yes
             Put 1 into foo
-            
-            
-            
+                        
+                        
+                        
             """)).isEqualToIgnoringScale(BigDecimal.ONE);
    }
 
@@ -47,9 +47,9 @@ public class EvaluatorConditionTest extends BaseEvaluatorTest {
             Else
             If yes
             Put 0 into foo
-            
-            
-            
+                        
+                        
+                        
             """)).isEqualToIgnoringScale(BigDecimal.ZERO);
    }
 
@@ -61,7 +61,7 @@ public class EvaluatorConditionTest extends BaseEvaluatorTest {
             Put 1 into foo
             Else
             Put 0 into foo
-            
+                        
             Else
             Put 2 into foo
 

@@ -18,3 +18,11 @@ dependencies {
 
     testImplementation("com.google.truth:truth:1.1.2")
 }
+
+tasks.register<JavaExec>("runStory") {
+   classpath = sourceSets["main"].runtimeClasspath
+   main = "ch.cheorges.Runner"
+   args = listOf(System.getProperty("filePath") ?: throw MissingFileArgumentException())
+}
+
+class MissingFileArgumentException : RuntimeException("The required argument (-DfilePath=\"...\") was not passed.")

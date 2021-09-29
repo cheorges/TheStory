@@ -1,0 +1,19 @@
+Modulus takes Number and Divisor
+While Number is as high as Divisor
+Put Number without Divisor into Number
+
+Let it be Number
+
+Let Limit be 11
+Let Counter be 1
+Let Hugo be 0
+While Counter is not Limit
+Put Modulus taking Counter and 7 into result
+If result is 0
+Say "Hugo"
+Else
+Say Counter
+
+Now Counter will be Counter plus 1
+
+

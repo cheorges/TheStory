@@ -2,9 +2,9 @@ package ch.cheorges;
 
 import static com.google.common.truth.Truth.assertThat;
 
-import org.junit.Test;
-
 import java.math.BigDecimal;
+
+import org.junit.Test;
 
 import ch.cheorges.exception.IllegalTypeException;
 

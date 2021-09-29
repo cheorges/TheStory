@@ -75,6 +75,7 @@ StringIdentifier = [^\n\r\"\\]+
     "taking"                            { return symbol(ParserSym.TAKING); }
     "and"                               { return symbol(ParserSym.AND); }
     ","                                 { return symbol(ParserSym.COMMA); }
+    (Say|say|Shout|shout|Print|print)   { return symbol(ParserSym.PRINT); }
     \"                                  { string.setLength(0); yybegin(STRING); }
 
     (with|plus)                         { return symbol(ParserSym.ADD); }
@@ -120,7 +121,7 @@ StringIdentifier = [^\n\r\"\\]+
 
 <STRING> {
     \"                                  { yybegin(YYINITIAL); return symbol(ParserSym.STRING_LITERAL, string.toString()); }
-    {StringIdentifier}                  { string.append( yytext() ); }
+    {StringIdentifier}                   { string.append( yytext() ); }
     \\t                                 { string.append('\t'); }
     \\n                                 { string.append('\n'); }
     \\r                                 { string.append('\r'); }

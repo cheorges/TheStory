@@ -10,6 +10,7 @@ import ch.cheorges.instruction.math.*;
 import ch.cheorges.instruction.condition.*;
 import ch.cheorges.instruction.loop.*;
 import ch.cheorges.instruction.function.*;
+import ch.cheorges.instruction.sout.*;
 
 class Parser;
 
@@ -20,7 +21,7 @@ terminal    String ALIAS;
 terminal    String NUMBER;
 terminal    Boolean TRUE, FALSE;
 
-terminal    LET, PUT, INTO, BE, NOW, WILL_BE, IF, ELSE, WHILE, TAKING, TAKES, AND, COMMA;
+terminal    LET, PUT, INTO, BE, NOW, WILL_BE, IF, ELSE, WHILE, TAKING, TAKES, AND, COMMA, PRINT;
 terminal    ADD, SUB, MUL, DIV;
 terminal    GE, LE, GEQ, LEQ, EQ, NOT_EQ;
 terminal    BLOCK_TERMINATOR;
@@ -44,9 +45,10 @@ non terminal    Instruction loop;
 non terminal    Instruction function;
 non terminal    Instruction function_call;
 non terminal    Instruction bool_evaluator;
+non terminal    Instruction print_out;
 
 precedence left DIV, SUB, ADD, MUL, GE, LE, GEQ, LEQ, EQ, NOT_EQ;
-precedence left value, PREFIX, ALIAS, IDENTIFIER, NAME_IDENTIFIER;
+precedence left value, PRINT, PREFIX, ALIAS, IDENTIFIER, NAME_IDENTIFIER;
 precedence left value, STRING_LITERAL, NUMBER, TRUE, FALSE;
 precedence left value, COMMA, AND;
 
@@ -60,7 +62,10 @@ instructions    ::= {: RESULT = new ArrayList<Instruction>(); :}
                   | instructions:i conditional:c {: RESULT = i; RESULT.add(c); :}
                   | instructions:i loop:l {: RESULT = i; RESULT.add(l); :}
                   | instructions:i function:f {: RESULT = i; RESULT.add(f); :}
+                  | instructions:i print_out:p {: RESULT = i; RESULT.add(p); :}
                   ;
+
+print_out       ::= PRINT value:v {: RESULT = new PrintInstruction(v); :};
 
 block           ::= program:p {: RESULT = p; :};
 

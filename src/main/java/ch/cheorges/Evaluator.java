@@ -1,33 +1,38 @@
 package ch.cheorges;
 
-import java.util.Arrays;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
 import ch.cheorges.exception.FunctionIdentifierMissmatchException;
-import ch.cheorges.exception.IdentifierNotDefinedException;
 import ch.cheorges.instruction.InstructionVisitor;
 import ch.cheorges.instruction.condition.BooleanConditionInstruction;
 import ch.cheorges.instruction.condition.ConditionalInstruction;
 import ch.cheorges.instruction.flow.ProgramInstruction;
 import ch.cheorges.instruction.function.FunctionCallInstruction;
 import ch.cheorges.instruction.function.FunctionDefinitionInstruction;
-import ch.cheorges.instruction.function.SubScopeContext;
+import ch.cheorges.instruction.function.ScopeContext;
 import ch.cheorges.instruction.loop.LoopInstruction;
 import ch.cheorges.instruction.math.MathOperationInstruction;
+import ch.cheorges.instruction.sout.PrintInstruction;
 import ch.cheorges.instruction.type.BooleanInstruction;
 import ch.cheorges.instruction.type.NumberInstruction;
 import ch.cheorges.instruction.type.StringLiteralInstruction;
 import ch.cheorges.instruction.variable.GetVariableInstruction;
 import ch.cheorges.instruction.variable.SetVariableInstruction;
 
-public class Evaluator extends SubScopeContext implements InstructionVisitor<Object> {
-   private final Map<String, Object> context;
-   private String lastUsedIdentifier;
+public class Evaluator extends ScopeContext implements InstructionVisitor<Object> {
+   private final PrintStream output;
+
+   public Evaluator(Map<String, Object> context, PrintStream output) {
+      super(context);
+      this.output = output;
+   }
 
    public Evaluator(Map<String, Object> context) {
-      this.context = context;
+      super(context);
+      output = System.out;
    }
 
    public Evaluator() {
@@ -127,18 +132,9 @@ public class Evaluator extends SubScopeContext implements InstructionVisitor<Obj
       return null;
    }
 
-   private void setValueToContext(String identifier, Object value) {
-      lastUsedIdentifier = identifier;
-      context.put(identifier.toLowerCase(Locale.ROOT), value);
-   }
-
-   private Object getValueFromContext(String identifier) {
-      if (Arrays.asList("he", "she", "it", "her", "his", "they").contains(identifier.toLowerCase(Locale.ROOT))) {
-         return context.get(lastUsedIdentifier);
-      }
-      context.computeIfAbsent(identifier, i -> {
-         throw new IdentifierNotDefinedException(i);
-      });
-      return context.get(identifier);
+   @Override
+   public Object handlePrintOut(PrintInstruction value) {
+      output.println(value.getValue().acceptVisitor(this));
+      return null;
    }
 }
